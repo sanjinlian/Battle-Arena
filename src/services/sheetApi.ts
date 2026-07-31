@@ -66,9 +66,20 @@ export async function fetchAllCmsData(): Promise<Partial<CmsData>> {
 
 // ── POST endpoints ────────────────────────────────────────────
 
+export interface RegistrationStats {
+  total: number
+  groupA: number
+  groupB: number
+  maxSlots: number
+}
+
+export async function fetchRegistrationStats(): Promise<RegistrationStats> {
+  return gasGet<RegistrationStats>('stats')
+}
+
 export async function postRegistration(
   payload: RegistrationPayload
-): Promise<{ success: boolean; registrationId?: string; message?: string }> {
+): Promise<{ success: boolean; registrationId?: string; group?: string; groupLabel?: string; totalRegistered?: number; message?: string }> {
   return gasPost('register', payload)
 }
 
