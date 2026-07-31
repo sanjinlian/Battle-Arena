@@ -117,8 +117,43 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-14">
           {tops.map((hero, i) => {
             const rotations = ['card-tilt-left', '', 'card-tilt-right']
-            const borders = ['#E63946', '#FFD600', '#1B2A6B']
-            const tapeColors = ['rgba(230,57,70,0.6)', 'rgba(255,214,0,0.75)', 'rgba(61,91,204,0.6)']
+            // Metallic gold / silver / bronze
+            const medals = [
+              {
+                rank: '金獎',
+                rankEn: 'GOLD',
+                border: '#C9A84C',
+                shadow: '#C9A84C',
+                tape: 'rgba(201,168,76,0.7)',
+                topColor: '#C9A84C',
+                topAccent: '#FFE082',
+                prizeColor: '#FFD600',
+                bg: 'linear-gradient(145deg, #1a1600 0%, #141414 60%)',
+              },
+              {
+                rank: '銀獎',
+                rankEn: 'SILVER',
+                border: '#A8A8A8',
+                shadow: '#A8A8A8',
+                tape: 'rgba(168,168,168,0.6)',
+                topColor: '#9E9E9E',
+                topAccent: '#E0E0E0',
+                prizeColor: '#D0D0D0',
+                bg: 'linear-gradient(145deg, #141414 0%, #121212 60%)',
+              },
+              {
+                rank: '銅獎',
+                rankEn: 'BRONZE',
+                border: '#8B6343',
+                shadow: '#8B6343',
+                tape: 'rgba(139,99,67,0.65)',
+                topColor: '#CD7F32',
+                topAccent: '#E8A96A',
+                prizeColor: '#CD7F32',
+                bg: 'linear-gradient(145deg, #120c07 0%, #141414 60%)',
+              },
+            ]
+            const m = medals[i] || medals[0]
             const yOffsets = ['md:translate-y-4', 'md:translate-y-0', 'md:translate-y-8']
 
             return (
@@ -126,10 +161,10 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
                 key={hero.heroName}
                 className={`relative ${rotations[i]} ${yOffsets[i]} transition-transform duration-300 hover:scale-105 hover:rotate-0 cursor-pointer`}
                 style={{
-                  background: '#141414',
-                  border: `2px solid ${borders[i]}`,
+                  background: m.bg,
+                  border: `2px solid ${m.border}`,
                   padding: '28px 24px 24px',
-                  boxShadow: `6px 6px 0 ${borders[i]}40`,
+                  boxShadow: `6px 6px 0 ${m.shadow}40`,
                 }}
               >
                 {/* Tape accent */}
@@ -141,7 +176,7 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
                     top: -10,
                     left: '50%',
                     transform: 'translateX(-50%) rotate(-2deg)',
-                    background: tapeColors[i],
+                    background: m.tape,
                   }}
                 />
 
@@ -153,7 +188,7 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
                     right: 14,
                     fontFamily: "'Space Mono', monospace",
                     fontSize: '0.65rem',
-                    color: borders[i],
+                    color: m.border,
                     letterSpacing: '0.1em',
                     opacity: 0.7,
                   }}
@@ -161,11 +196,11 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
                   #{String(hero.order).padStart(2, '0')}
                 </div>
 
-                {/* Spinning top */}
+                {/* Spinning top — metallic color */}
                 <div className="flex justify-center mb-4 float-anim" style={{ animationDelay: `${i * 0.4}s` }}>
                   <SpinningTop
-                    color={hero.color}
-                    accentColor={hero.accentColor}
+                    color={m.topColor}
+                    accentColor={m.topAccent}
                     size={90}
                     spinClass="spin-slow"
                   />
@@ -184,25 +219,40 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
                   {hero.heroName}
                 </h3>
 
-                {/* Prize label */}
-                <div
-                  style={{
-                    fontFamily: "'Space Mono', monospace",
-                    fontSize: '0.6rem',
-                    letterSpacing: '0.18em',
-                    color: borders[i],
-                    textTransform: 'uppercase',
-                    marginBottom: 8,
-                    opacity: 0.85,
-                  }}
-                >
-                  冠軍獎品
+                {/* Prize label — 競賽獎勵 + 金/銀/銅 */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <span
+                    style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: '0.55rem',
+                      letterSpacing: '0.15em',
+                      color: 'rgba(242,237,224,0.35)',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    競賽獎勵
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "'Archivo Black', sans-serif",
+                      fontSize: '0.7rem',
+                      letterSpacing: '0.12em',
+                      color: m.border,
+                      textTransform: 'uppercase',
+                      border: `1px solid ${m.border}`,
+                      padding: '1px 7px',
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {m.rank} {m.rankEn}
+                  </span>
                 </div>
+                {/* Prize name */}
                 <div
                   style={{
                     fontFamily: "'Special Elite', cursive",
                     fontSize: '1rem',
-                    color: '#FFD600',
+                    color: m.prizeColor,
                     marginBottom: 10,
                   }}
                 >
@@ -210,7 +260,7 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
                 </div>
 
                 {/* Divider */}
-                <div style={{ height: 1, background: `${borders[i]}40`, marginBottom: 10 }} />
+                <div style={{ height: 1, background: `${m.border}35`, marginBottom: 10 }} />
 
                 {/* Description */}
                 <p
