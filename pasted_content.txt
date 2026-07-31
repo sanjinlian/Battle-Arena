@@ -1,0 +1,594 @@
+CHAZZ Battle Arena｜戰鬥陀螺競技平台 PRD v1.0
+
+專案定位
+
+本平台並非單次活動報名網站，而是 CHAZZ Battle Arena 長期經營平台。
+
+所有活動資訊、首頁視覺、獎品、賽程、公告、音樂、動畫、報名設定皆由 Google Sheets 作為 CMS 後台管理，讓未來每次活動幾乎不需要修改程式即可完成更新。
+
+⸻
+
+一、產品目標
+
+打造一套可長期營運的 Battle Arena 平台，未來每一季（Season）只需要更新 Google Sheets 即可更換：
+
+* 活動名稱
+* Logo
+* Loading動畫
+* 首頁三顆陀螺
+* 冠軍獎品
+* 首頁Banner
+* 背景音樂
+* 賽程
+* 報名時間
+* 公告
+* 主題風格
+
+完全不需重新部署網站。
+
+⸻
+
+二、網站架構
+
+Loading Animation
+↓
+首頁 Home
+├── 活動資訊
+├── 賽程
+├── 獎勵
+├── 報名
+├── FAQ
+├── 最新公告
+├── 會員登入
+└── 我的資訊
+
+我的里程碑（準備中）
+
+排行榜（準備中）
+
+會員成長系統（準備中）
+
+第一版僅保留入口，UI 顯示「Coming Soon」，資料表可先建立，但前端不開發功能。
+
+⸻
+
+三、美術風格（正式定義）
+
+Theme
+
+Neo Dadaism × Battle Arena × Coffee Culture
+
+不是一般戰鬥網站。
+
+希望整體像一本藝術展刊。
+
+融合：
+
+* Dadaism（達達主義）
+* 拼貼藝術
+* 咖啡文化
+* 潮流設計
+* 街頭海報
+
+⸻
+
+美術元素
+
+背景：
+
+* 手撕紙
+* 報紙
+* 咖啡漬
+* 油墨
+* 幾何圖形
+* 噴漆
+* 拼貼照片
+* 黑白攝影
+* 不規則紙張
+
+動畫：
+
+* 撕紙
+* 紙片飛散
+* Ink Splash
+* Glitch
+* Sticker Pop
+
+⸻
+
+配色
+
+Primary
+
+黑色
+
+米白
+
+亮紅
+
+亮黃
+
+深藍
+
+亮綠
+
+點綴：
+
+金色
+
+銀色
+
+⸻
+
+UI
+
+Button：
+
+紙膠帶
+
+貼紙
+
+手寫字
+
+Hover：
+
+紙張翻起
+
+Ink動畫
+
+卡片：
+
+全部不同角度
+
+不同大小
+
+不同拼貼
+
+避免制式Grid。
+
+⸻
+
+四、Loading動畫
+
+第一次進網站播放。
+
+之後Cookie記錄。
+
+不用每次播放。
+
+流程：
+
+黑畫面
+↓
+音樂開始
+↓
+三顆陀螺飛入
+↓
+高速旋轉
+↓
+撞擊
+↓
+火花
+↓
+LOGO
+↓
+Enter Arena
+↓
+首頁
+
+全部素材皆由 Google Sheets 控制。
+
+⸻
+
+五、首頁 Hero
+
+Hero 不寫死。
+
+完全由 Google Sheets 控制。
+
+首頁會自動載入：
+
+* 活動名稱
+* 主標題
+* 副標題
+* 三顆陀螺
+* 三項冠軍獎品
+* 報名按鈕
+
+⸻
+
+Hero Layout
+
+Battle Arena
+Season 01
+──────────────
+Hero 1
+Hero 2
+Hero 3
+──────────────
+立即報名
+
+⸻
+
+每顆 Hero 可設定：
+
+* 名稱
+* 圖片
+* 陀螺圖片
+* 冠軍獎品
+* 介紹
+* 顏色
+
+皆可於 Google Sheets 更換。
+
+⸻
+
+六、會員系統
+
+登入方式：
+
+Google Login
+
+Email Login
+
+登入後：
+
+Hi,
+Luby
+Email
+已參加活動數
+（準備中）
+里程碑
+（準備中）
+排名
+（準備中）
+
+第一版：
+
+只完成登入。
+
+其它全部顯示：
+
+Coming Soon。
+
+⸻
+
+七、報名流程
+
+登入
+
+↓
+
+閱讀規則
+
+↓
+
+選擇組別
+
+↓
+
+填寫資料
+
+↓
+
+送出
+
+↓
+
+Google Sheet
+
+↓
+
+寄送Email
+
+↓
+
+完成
+
+⸻
+
+八、Google Sheets CMS（重點）
+
+1. Website_Config
+
+控制整個網站。
+
+Key	Value
+WebsiteName	CHAZZ Battle Arena
+Theme	Neo Dadaism
+CurrentSeason	Season01
+RegistrationOpen	TRUE
+EnableLoading	TRUE
+EnableMusic	TRUE
+EnableHero	TRUE
+Maintenance	FALSE
+
+⸻
+
+2. Season_Config
+
+控制目前活動。
+
+Season	Active	Theme	Logo	Background	Music
+Season01	TRUE	Neo Dadaism	Logo URL	Image URL	MP3 URL
+
+網站只抓
+
+Active = TRUE
+
+⸻
+
+3. Loading
+
+控制Loading動畫。
+
+Enable	Logo	Music	Video	Duration
+TRUE	Logo URL	MP3 URL	MP4 URL	7
+
+若未提供影片，可改為圖片序列動畫。
+
+⸻
+
+4. Hero_Prize（首頁三顆陀螺）
+
+最重要。
+
+Enable	Order	Hero Name	Beyblade Image	Prize Image	Prize Name	Description	Button Link
+TRUE	1	Dragon Cup	URL	URL	限定陀螺	介紹	URL
+
+網站永遠抓前三筆。
+
+以後活動只需修改這裡。
+
+⸻
+
+5. Event_Info
+
+活動資訊。
+
+Title	Date	Location	Description	RegisterDeadline
+
+⸻
+
+6. Schedule
+
+賽程。
+
+Time	Event	Description
+
+例如：
+
+09:00
+
+報到
+
+⸻
+
+10:00
+
+初級組
+
+⸻
+
+14:00
+
+決賽
+
+⸻
+
+7. Rules
+
+規則。
+
+Order	Title	Content
+
+例如：
+
+禁止改造
+
+禁止代打
+
+一人限報一組
+
+等等。
+
+⸻
+
+8. FAQ
+
+Question	Answer
+
+前端Accordion。
+
+⸻
+
+9. Announcement
+
+首頁公告。
+
+Enable	Date	Title	Content
+
+只顯示TRUE。
+
+⸻
+
+10. Members
+
+會員資料。
+
+Email	Name	JoinDate	LastLogin
+
+登入自動新增。
+
+⸻
+
+11. Registration
+
+所有報名資料。
+
+ID	Email	Name	Phone	Category	Status	RegisterDate
+
+Status：
+
+Pending
+
+Approved
+
+Cancel
+
+Finished
+
+⸻
+
+12. Badge（準備中）
+
+第一版建立。
+
+不讀取。
+
+| Email | Badge | Image | UnlockDate |
+
+⸻
+
+13. Ranking（準備中）
+
+| Email | Point | Win | Lose |
+
+⸻
+
+14. Milestone（準備中）
+
+| Email | Image | Title | Description |
+
+⸻
+
+15. Theme_Assets
+
+所有素材。
+
+Type	URL
+
+例如：
+
+Sticker
+
+Coffee
+
+Paper
+
+Texture
+
+Mask
+
+Noise
+
+Arrow
+
+Tape
+
+Brush
+
+網站自動讀取。
+
+⸻
+
+16. Music
+
+背景音樂。
+
+Enable	Name	URL
+
+⸻
+
+17. Gallery（建議）
+
+歷屆照片。
+
+| Image | Description | Season |
+
+⸻
+
+18. Sponsor（建議）
+
+合作品牌。
+
+| Logo | Name | URL |
+
+⸻
+
+九、Google Apps Script API
+
+建議建立統一 API，例如：
+
+GET /config
+GET /hero
+GET /schedule
+GET /event
+GET /faq
+GET /announcement
+GET /music
+POST /register
+POST /login
+GET /member
+
+所有資料均由 Google Sheets 提供，不直接讓前端讀取試算表。
+
+⸻
+
+十、第一版開發範圍（MVP）
+
+完成
+
+* Loading 動畫
+* 首頁 Hero
+* Google Login
+* Email Login
+* 活動資訊
+* 賽程
+* FAQ
+* 公告
+* Google Sheets CMS
+* 報名系統
+* Email 通知
+* 後台管理（Google Sheets）
+
+⸻
+
+顯示「準備中」
+
+* 我的里程碑
+* 排行榜
+* 積分
+* 徽章
+* 勝率
+* 玩家頁面
+* 會員成長系統
+
+畫面保留入口，點擊後顯示：
+
+🚧 功能開發中，敬請期待。
+
+⸻
+
+十一、未來第二版（V2）
+
+* QR Code 報到
+* 即時對戰配對
+* 淘汰賽自動產生
+* 裁判計分介面
+* 積分排行榜
+* 勝率分析
+* 玩家卡片
+* 徽章系統
+* 里程碑系統
+* 神獸收藏
+* 社群分享
+* 年度總決賽
+* 店內消費與會員積分整合
+* 咖啡廳活動（甜點、集點、會員福利）串接
+
+⸻
+
+十二、整體設計理念
+
+CHAZZ Battle Arena 不只是戰鬥陀螺報名網站，而是一個可長期經營的品牌平台。透過 Google Sheets + Google Apps Script 建立低維護成本的 CMS，讓非工程人員也能管理活動內容；再以 Neo Dadaism 作為品牌視覺語言，打造具有藝術感與辨識度的互動體驗。第一版專注於活動管理與報名流程，第二版再逐步開放會員成長、里程碑、排行榜等遊戲化功能，讓平台具備持續經營與擴充的基礎。
