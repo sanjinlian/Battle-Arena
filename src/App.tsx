@@ -107,6 +107,7 @@ export default function App() {
           categoriesData={data.categories}
           rulesData={data.rules}
           websiteConfig={data.websiteConfig}
+          eventData={data.event}
         />
         <FAQSection faqData={data.faq} />
         <AnnouncementsSection announcementsData={data.announcements} />

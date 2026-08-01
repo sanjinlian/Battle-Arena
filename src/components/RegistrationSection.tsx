@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import type { Rule, WebsiteConfig } from '../types/cms'
+import type { Rule, WebsiteConfig, EventInfo } from '../types/cms'
 import { fetchRegistrationStats, type RegistrationStats } from '../services/sheetApi'
 
 interface RegistrationSectionProps {
@@ -7,6 +7,7 @@ interface RegistrationSectionProps {
   isLoggedIn: boolean
   rulesData: Rule[]
   websiteConfig: WebsiteConfig
+  eventData: EventInfo
   // kept for prop compatibility
   categoriesData?: unknown[]
 }
@@ -46,7 +47,7 @@ const BRACKET = [
   },
 ]
 
-export default function RegistrationSection({ onRegisterClick, isLoggedIn, rulesData, websiteConfig }: RegistrationSectionProps) {
+export default function RegistrationSection({ onRegisterClick, isLoggedIn, rulesData, websiteConfig, eventData }: RegistrationSectionProps) {
   const [rulesOpen, setRulesOpen] = useState<number | null>(null)
   const [stats, setStats] = useState<RegistrationStats | null>(null)
 
@@ -58,7 +59,7 @@ export default function RegistrationSection({ onRegisterClick, isLoggedIn, rules
       .catch(() => null)
   }, [])
 
-  const totalSlots = stats?.maxSlots ?? 32
+  const totalSlots = stats?.maxSlots ?? eventData.maxParticipants ?? 32
   const totalFilled = stats?.total ?? 0
   const filledPct = Math.min(Math.round((totalFilled / totalSlots) * 100), 100)
   const isFull = totalFilled >= totalSlots

@@ -73,7 +73,13 @@ export default function AuthModal({ onClose, onLogin }: AuthModalProps) {
     setError('')
     try {
       // Decode JWT payload (not verifying signature — GAS will do that)
-      const payload = JSON.parse(atob(response.credential.split('.')[1]))
+      // base64url → UTF-8: fix garbled CJK/non-ASCII display names
+      const base64url = response.credential.split('.')[1]
+      const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/')
+      const jsonStr = new TextDecoder().decode(
+        Uint8Array.from(atob(base64), (c) => c.charCodeAt(0))
+      )
+      const payload = JSON.parse(jsonStr)
       const result = await postLogin({
         email: payload.email,
         name: payload.name,
