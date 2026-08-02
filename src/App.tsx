@@ -41,7 +41,7 @@ export default function App() {
 
   useEffect(() => {
     if (mainVisible) {
-      const bgm = new Audio('/background_music.wav')
+      const bgm = new Audio(`${import.meta.env.BASE_URL}background_music.wav`)
       bgm.loop = true
       bgm.volume = 0.4 // Slightly lower for background
       bgm.play().catch(e => console.warn('BGM Autoplay blocked:', e))

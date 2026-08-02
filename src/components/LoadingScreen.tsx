@@ -20,7 +20,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [exploding, setExploding] = useState(false)
 
   useEffect(() => {
-    const audio = new Audio('/loading_music.mp3')
+    const audio = new Audio(`${import.meta.env.BASE_URL}loading_music.mp3`)
     audio.loop = true
     audio.volume = 0.5 // Default reasonable volume
     audio.play().catch(e => console.warn('Autoplay blocked:', e))
