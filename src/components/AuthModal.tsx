@@ -86,7 +86,7 @@ export default function AuthModal({ onClose, onLogin }: AuthModalProps) {
         googleToken: response.credential,
       })
       if (result.success) {
-        onLogin({ name: result.name || payload.name, email: result.email || payload.email })
+        onLogin({ name: payload.name || result.name, email: result.email || payload.email })
       } else {
         setError('登入失敗，請稍後再試')
       }
