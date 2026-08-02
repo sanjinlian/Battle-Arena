@@ -20,6 +20,11 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [exploding, setExploding] = useState(false)
 
   useEffect(() => {
+    const audio = new Audio('/loading_music.mp3')
+    audio.loop = true
+    audio.volume = 0.5 // Default reasonable volume
+    audio.play().catch(e => console.warn('Autoplay blocked:', e))
+
     const timers = [
       setTimeout(() => setPhase('fly-in'), 400),
       setTimeout(() => setPhase('spin'), 1800),
@@ -28,7 +33,11 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       setTimeout(() => setPhase('logo'), 4900),
       setTimeout(() => setPhase('button'), 6200),
     ]
-    return () => timers.forEach(clearTimeout)
+    return () => {
+      timers.forEach(clearTimeout)
+      audio.pause()
+      audio.currentTime = 0
+    }
   }, [])
 
   const flyInStyle = (phase === 'fly-in' || phase === 'spin' || phase === 'collide' || phase === 'explode' || phase === 'logo' || phase === 'button')
