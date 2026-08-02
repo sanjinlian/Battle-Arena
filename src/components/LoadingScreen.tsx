@@ -5,7 +5,7 @@ interface LoadingScreenProps {
   onComplete: () => void
 }
 
-type Phase = 'init' | 'black' | 'fly-in' | 'spin' | 'collide' | 'explode' | 'logo' | 'button'
+type Phase = 'black' | 'fly-in' | 'spin' | 'collide' | 'explode' | 'logo' | 'button'
 
 const SPARKS = Array.from({ length: 20 }, (_, i) => ({
   angle: (i / 20) * 360,
@@ -16,14 +16,10 @@ const SPARKS = Array.from({ length: 20 }, (_, i) => ({
 }))
 
 export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
-  const [phase, setPhase] = useState<Phase>('init')
+  const [phase, setPhase] = useState<Phase>('black')
   const [exploding, setExploding] = useState(false)
-  const [started, setStarted] = useState(false)
 
   useEffect(() => {
-    if (!started) return
-
-    setPhase('black')
     const audio = new Audio(`${import.meta.env.BASE_URL}loading_music.mp3`)
     audio.loop = true
     audio.volume = 0.5 // Default reasonable volume
@@ -42,7 +38,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       audio.pause()
       audio.currentTime = 0
     }
-  }, [started])
+  }, [])
 
   const flyInStyle = (phase === 'fly-in' || phase === 'spin' || phase === 'collide' || phase === 'explode' || phase === 'logo' || phase === 'button')
 
@@ -269,31 +265,6 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       >
         Coffee × Culture × Combat
       </div>
-
-      {/* ─── Init Phase Button ─── */}
-      {phase === 'init' && (
-        <div className="absolute z-50" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-          <button
-            onClick={() => setStarted(true)}
-            className="btn-sticker"
-            style={{
-              background: '#E63946',
-              color: '#F2EDE0',
-              fontFamily: "'Archivo Black', sans-serif",
-              fontSize: '1.2rem',
-              letterSpacing: '0.15em',
-              padding: '16px 48px',
-              border: '3px solid #F2EDE0',
-              cursor: 'pointer',
-              textTransform: 'uppercase',
-              boxShadow: '4px 4px 0 #FFD600',
-              animation: 'pulse-red 2s infinite',
-            }}
-          >
-            START
-          </button>
-        </div>
-      )}
     </div>
   )
 }
