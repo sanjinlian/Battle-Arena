@@ -9,8 +9,9 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onRegisterClick, heroData, websiteConfig }: HeroSectionProps) {
   const tops = heroData.filter((h) => h.enable).sort((a, b) => a.order - b.order)
-  const medalPrizes = tops.slice(0, 3)
-  const lotteryPrizes = tops.slice(3)
+  const medalPrizes = tops.filter(h => h.type === 'rank')
+  const participationPrizes = tops.filter(h => h.type === 'participation')
+  const bonusPrizes = tops.filter(h => h.type === 'bonus')
 
   return (
     <section
@@ -280,14 +281,13 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
           })}
         </div>
 
-        {/* Lottery prizes section — shows only when there are items */}
-        {lotteryPrizes.length > 0 && (
+        {/* ── Participation prizes section ── */}
+        {participationPrizes.length > 0 && (
           <div style={{ marginBottom: 48 }}>
-            {/* Section header */}
             <div className="flex items-center gap-4 mb-8">
               <div style={{ flex: 1, height: 1, background: 'rgba(242,237,224,0.1)' }} />
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: '1.2rem' }}>🎰</span>
+                <span style={{ fontSize: '1.2rem' }}>🎁</span>
                 <span
                   style={{
                     fontFamily: "'Archivo Black', sans-serif",
@@ -297,74 +297,60 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
                     textTransform: 'uppercase',
                   }}
                 >
-                  抽獎環節
+                  參賽獎勵
                 </span>
                 <span
                   style={{
                     fontFamily: "'Space Mono', monospace",
                     fontSize: '0.6rem',
                     letterSpacing: '0.15em',
-                    color: '#00B4D8',
-                    border: '1px solid #00B4D8',
+                    color: '#00C44F',
+                    border: '1px solid #00C44F',
                     padding: '2px 8px',
                   }}
                 >
-                  LUCKY DRAW
+                  ALL PARTICIPANTS
                 </span>
               </div>
               <div style={{ flex: 1, height: 1, background: 'rgba(242,237,224,0.1)' }} />
             </div>
 
-            {/* Lottery cards — responsive, any number of items */}
             <div
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
-              style={{ justifyItems: lotteryPrizes.length === 1 ? 'center' : 'stretch' }}
+              style={{ justifyItems: participationPrizes.length === 1 ? 'center' : 'stretch' }}
             >
-              {lotteryPrizes.map((prize, idx) => (
+              {participationPrizes.map((prize, idx) => (
                 <div
                   key={prize.heroName + idx}
                   style={{
-                    background: 'linear-gradient(145deg, #0a1020 0%, #141414 70%)',
-                    border: '2px solid #00B4D8',
+                    background: 'linear-gradient(145deg, #081a0e 0%, #0f1f12 70%)',
+                    border: '2px solid #00C44F',
                     padding: '24px 20px 20px',
-                    boxShadow: '5px 5px 0 rgba(0,180,216,0.25)',
+                    boxShadow: '5px 5px 0 rgba(0,196,79,0.2)',
                     position: 'relative',
                     transform: `rotate(${idx % 2 === 0 ? '-0.4deg' : '0.5deg'})`,
-                    maxWidth: lotteryPrizes.length === 1 ? 360 : 'none',
+                    maxWidth: participationPrizes.length === 1 ? 360 : 'none',
                     width: '100%',
                   }}
                 >
-                  {/* Lottery badge top-right */}
                   <div
                     style={{
                       position: 'absolute',
-                      top: 10,
-                      right: 12,
-                      fontFamily: "'Space Mono', monospace",
+                      top: -10,
+                      left: 16,
+                      background: '#00C44F',
+                      color: '#0D0D0D',
+                      fontFamily: "'Archivo Black', sans-serif",
                       fontSize: '0.55rem',
-                      letterSpacing: '0.1em',
-                      color: '#00B4D8',
-                      opacity: 0.7,
+                      letterSpacing: '0.15em',
+                      padding: '3px 10px',
+                      textTransform: 'uppercase',
                     }}
                   >
-                    #{String(prize.order).padStart(2, '0')}
+                    全員獲得
                   </div>
 
-                  {/* Lucky ticket accent */}
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: -8,
-                      left: 20,
-                      background: 'rgba(0,180,216,0.5)',
-                      width: 70,
-                      height: 16,
-                      transform: 'rotate(-3deg)',
-                    }}
-                  />
-
-                  {/* Label */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, marginTop: 4 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, marginTop: 8 }}>
                     <span
                       style={{
                         fontFamily: "'Space Mono', monospace",
@@ -374,25 +360,24 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
                         textTransform: 'uppercase',
                       }}
                     >
-                      抽獎獎品
+                      參賽獎品
                     </span>
                     <span
                       style={{
                         fontFamily: "'Archivo Black', sans-serif",
                         fontSize: '0.65rem',
                         letterSpacing: '0.12em',
-                        color: '#00B4D8',
+                        color: '#00C44F',
                         textTransform: 'uppercase',
-                        border: '1px solid #00B4D8',
+                        border: '1px solid #00C44F',
                         padding: '1px 6px',
                         lineHeight: 1.6,
                       }}
                     >
-                      LUCKY PRIZE
+                      PARTICIPANT PRIZE
                     </span>
                   </div>
 
-                  {/* Prize name */}
                   <div
                     style={{
                       fontFamily: "'Archivo Black', sans-serif",
@@ -408,14 +393,161 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
                     style={{
                       fontFamily: "'Special Elite', cursive",
                       fontSize: '0.95rem',
-                      color: '#00E5FF',
+                      color: '#69ff9a',
                       marginBottom: 10,
                     }}
                   >
                     {prize.prizeName}
                   </div>
 
-                  <div style={{ height: 1, background: 'rgba(0,180,216,0.2)', marginBottom: 10 }} />
+                  <div style={{ height: 1, background: 'rgba(0,196,79,0.2)', marginBottom: 10 }} />
+
+                  <p
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: '0.78rem',
+                      lineHeight: 1.65,
+                      color: 'rgba(242,237,224,0.5)',
+                    }}
+                  >
+                    {prize.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Bonus prizes section ── */}
+        {bonusPrizes.length > 0 && (
+          <div style={{ marginBottom: 48 }}>
+            <div className="flex items-center gap-4 mb-8">
+              <div style={{ flex: 1, height: 1, background: 'rgba(242,237,224,0.1)' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: '1.2rem' }}>✨</span>
+                <span
+                  style={{
+                    fontFamily: "'Archivo Black', sans-serif",
+                    fontSize: '0.85rem',
+                    letterSpacing: '0.18em',
+                    color: '#F2EDE0',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  加碼獎勵
+                </span>
+                <span
+                  style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: '0.6rem',
+                    letterSpacing: '0.15em',
+                    color: '#FFD600',
+                    border: '1px solid #FFD600',
+                    padding: '2px 8px',
+                  }}
+                >
+                  BONUS
+                </span>
+              </div>
+              <div style={{ flex: 1, height: 1, background: 'rgba(242,237,224,0.1)' }} />
+            </div>
+
+            <div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+              style={{ justifyItems: bonusPrizes.length === 1 ? 'center' : 'stretch' }}
+            >
+              {bonusPrizes.map((prize, idx) => (
+                <div
+                  key={prize.heroName + idx}
+                  style={{
+                    background: 'linear-gradient(145deg, #1a1500 0%, #141414 70%)',
+                    border: '2px solid #FFD600',
+                    padding: '24px 20px 20px',
+                    boxShadow: '5px 5px 0 rgba(255,214,0,0.2)',
+                    position: 'relative',
+                    transform: `rotate(${idx % 2 === 0 ? '-0.4deg' : '0.5deg'})`,
+                    maxWidth: bonusPrizes.length === 1 ? 360 : 'none',
+                    width: '100%',
+                  }}
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 10,
+                      right: 12,
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: '0.55rem',
+                      letterSpacing: '0.1em',
+                      color: '#FFD600',
+                      opacity: 0.7,
+                    }}
+                  >
+                    #{String(prize.order).padStart(2, '0')}
+                  </div>
+
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: -8,
+                      left: 20,
+                      background: 'rgba(255,214,0,0.4)',
+                      width: 70,
+                      height: 16,
+                      transform: 'rotate(-3deg)',
+                    }}
+                  />
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, marginTop: 4 }}>
+                    <span
+                      style={{
+                        fontFamily: "'Space Mono', monospace",
+                        fontSize: '0.55rem',
+                        letterSpacing: '0.15em',
+                        color: 'rgba(242,237,224,0.35)',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      加碼獎品
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: "'Archivo Black', sans-serif",
+                        fontSize: '0.65rem',
+                        letterSpacing: '0.12em',
+                        color: '#FFD600',
+                        textTransform: 'uppercase',
+                        border: '1px solid #FFD600',
+                        padding: '1px 6px',
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      BONUS PRIZE
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      fontFamily: "'Archivo Black', sans-serif",
+                      fontSize: '1.1rem',
+                      color: '#F2EDE0',
+                      letterSpacing: '0.02em',
+                      marginBottom: 4,
+                    }}
+                  >
+                    {prize.heroName}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Special Elite', cursive",
+                      fontSize: '0.95rem',
+                      color: '#FFE566',
+                      marginBottom: 10,
+                    }}
+                  >
+                    {prize.prizeName}
+                  </div>
+
+                  <div style={{ height: 1, background: 'rgba(255,214,0,0.2)', marginBottom: 10 }} />
 
                   <p
                     style={{

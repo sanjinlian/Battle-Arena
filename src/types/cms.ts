@@ -25,6 +25,7 @@ export interface SeasonConfig {
 export interface HeroPrize {
   enable: boolean
   order: number
+  type: 'rank' | 'participation' | 'bonus'
   heroName: string
   beybladeImage: string
   prizeImage: string
