@@ -5,7 +5,7 @@ interface LoadingScreenProps {
   onComplete: () => void
 }
 
-type Phase = 'init' | 'black' | 'fly-in' | 'spin' | 'collide' | 'explode' | 'logo' | 'button'
+type Phase = 'black' | 'fly-in' | 'spin' | 'collide' | 'explode' | 'logo' | 'button'
 
 const SPARKS = Array.from({ length: 20 }, (_, i) => ({
   angle: (i / 20) * 360,
@@ -15,26 +15,14 @@ const SPARKS = Array.from({ length: 20 }, (_, i) => ({
   duration: 0.4 + Math.random() * 0.4,
 }))
 
-// Hint dots positioned around the top
-const HINT_DOTS = [
-  { angle: -60, dist: 110, delay: '0s' },
-  { angle: 60, dist: 110, delay: '0.3s' },
-  { angle: 180, dist: 100, delay: '0.6s' },
-  { angle: -20, dist: 140, delay: '0.2s' },
-  { angle: 20, dist: 140, delay: '0.5s' },
-]
-
 export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
-  const [phase, setPhase] = useState<Phase>('init')
+  const [phase, setPhase] = useState<Phase>('black')
   const [exploding, setExploding] = useState(false)
-  const [hovered, setHovered] = useState(false)
 
-  const startAnimation = () => {
-    setPhase('black')
-
+  useEffect(() => {
     const audio = new Audio(`${import.meta.env.BASE_URL}loading_music.mp3`)
     audio.loop = true
-    audio.volume = 0.5
+    audio.volume = 0.5 // Default reasonable volume
     audio.play().catch(e => console.warn('Autoplay blocked:', e))
 
     const timers = [
@@ -45,14 +33,12 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       setTimeout(() => setPhase('logo'), 4900),
       setTimeout(() => setPhase('button'), 6200),
     ]
-
-    // Cleanup captured in closure; no-op after unmount since timers auto-clear
     return () => {
       timers.forEach(clearTimeout)
       audio.pause()
       audio.currentTime = 0
     }
-  }
+  }, [])
 
   const flyInStyle = (phase === 'fly-in' || phase === 'spin' || phase === 'collide' || phase === 'explode' || phase === 'logo' || phase === 'button')
 
@@ -279,122 +265,6 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       >
         Coffee × Culture × Combat
       </div>
-
-      {/* ── Init phase — clickable top ── */}
-      {phase === 'init' && (
-        <div
-          className="absolute inset-0 flex flex-col items-center justify-center z-50"
-          style={{ cursor: 'pointer' }}
-          onClick={startAnimation}
-        >
-          {/* Hint text top */}
-          <div
-            style={{
-              fontFamily: "'Space Mono', monospace",
-              fontSize: '0.6rem',
-              letterSpacing: '0.3em',
-              color: 'rgba(242,237,224,0.35)',
-              textTransform: 'uppercase',
-              marginBottom: 32,
-              animation: 'pulse-fade 2s ease-in-out infinite',
-            }}
-          >
-            TAP TO START
-          </div>
-
-          {/* Clickable top + hint dots container */}
-          <div style={{ position: 'relative', width: 200, height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {/* Pulsing ring */}
-            <div
-              style={{
-                position: 'absolute',
-                width: 160,
-                height: 160,
-                borderRadius: '50%',
-                border: '1px solid rgba(230,57,70,0.3)',
-                animation: 'ping 2s ease-out infinite',
-              }}
-            />
-            <div
-              style={{
-                position: 'absolute',
-                width: 200,
-                height: 200,
-                borderRadius: '50%',
-                border: '1px solid rgba(230,57,70,0.15)',
-                animation: 'ping 2s ease-out infinite 0.5s',
-              }}
-            />
-
-            {/* Hint dots around */}
-            {HINT_DOTS.map((dot, i) => {
-              const rad = (dot.angle * Math.PI) / 180
-              const x = 100 + Math.cos(rad) * dot.dist
-              const y = 100 + Math.sin(rad) * dot.dist
-              return (
-                <div
-                  key={i}
-                  style={{
-                    position: 'absolute',
-                    left: x,
-                    top: y,
-                    width: 6,
-                    height: 6,
-                    borderRadius: '50%',
-                    background: i % 2 === 0 ? '#E63946' : '#FFD600',
-                    transform: 'translate(-50%, -50%)',
-                    animation: `pulse-fade 1.8s ease-in-out infinite ${dot.delay}`,
-                    boxShadow: i % 2 === 0 ? '0 0 8px #E63946' : '0 0 8px #FFD600',
-                  }}
-                />
-              )
-            })}
-
-            {/* The spinning top — scale up on hover */}
-            <div
-              onMouseEnter={() => setHovered(true)}
-              onMouseLeave={() => setHovered(false)}
-              style={{
-                transition: 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                transform: hovered ? 'scale(1.15)' : 'scale(1)',
-                filter: hovered ? 'drop-shadow(0 0 20px rgba(230,57,70,0.6))' : 'drop-shadow(0 0 8px rgba(230,57,70,0.3))',
-              }}
-            >
-              <SpinningTop
-                color="#E63946"
-                accentColor="#FF6B74"
-                size={120}
-                spinClass="spin-wobble"
-              />
-            </div>
-          </div>
-
-          {/* Hint text bottom */}
-          <div
-            style={{
-              fontFamily: "'Special Elite', cursive",
-              fontSize: '0.8rem',
-              color: 'rgba(242,237,224,0.25)',
-              letterSpacing: '0.12em',
-              marginTop: 28,
-              animation: 'pulse-fade 2.5s ease-in-out infinite 0.8s',
-            }}
-          >
-            點一下，開始戰鬥
-          </div>
-
-          <style>{`
-            @keyframes pulse-fade {
-              0%, 100% { opacity: 0.3; }
-              50% { opacity: 1; }
-            }
-            @keyframes ping {
-              0% { transform: scale(0.8); opacity: 0.6; }
-              100% { transform: scale(1.4); opacity: 0; }
-            }
-          `}</style>
-        </div>
-      )}
     </div>
   )
 }
