@@ -10,6 +10,7 @@ import AnnouncementsSection from './components/AnnouncementsSection'
 import ComingSoonSection from './components/ComingSoonSection'
 import AuthModal from './components/AuthModal'
 import RegistrationModal from './components/RegistrationModal'
+import ProfileModal from './components/ProfileModal'
 import Footer from './components/Footer'
 import { useCmsData } from './hooks/useCmsData'
 
@@ -32,6 +33,7 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null)
   const [showAuth, setShowAuth] = useState(false)
   const [showReg, setShowReg] = useState(false)
+  const [showProfile, setShowProfile] = useState(false)
 
   useEffect(() => {
     if (!showLoading) {
@@ -118,6 +120,7 @@ export default function App() {
       >
         <Navigation
           onLoginClick={() => setShowAuth(true)}
+          onProfileClick={() => setShowProfile(true)}
           user={user}
           onLogout={() => setUser(null)}
         />
@@ -156,6 +159,13 @@ export default function App() {
           rulesData={data.rules}
           eventData={data.event}
           onLoginRequired={() => { setShowReg(false); setShowAuth(true) }}
+        />
+      )}
+      {showProfile && user && (
+        <ProfileModal
+          onClose={() => setShowProfile(false)}
+          user={user}
+          eventData={data.event}
         />
       )}
     </>

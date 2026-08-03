@@ -86,3 +86,24 @@ export async function postLogin(
 ): Promise<{ success: boolean; name: string; email: string; isNew: boolean }> {
   return gasPost('login', payload)
 }
+
+export interface MyRegistration {
+  found: boolean
+  registrationId?: string
+  name?: string
+  email?: string
+  phone?: string
+  group?: string
+  groupLabel?: string
+  status?: string
+  registerDate?: string
+  notes?: string
+}
+
+export async function fetchMyRegistration(email: string): Promise<MyRegistration> {
+  const res = await fetch(`${GAS_URL}?action=myRegistration&email=${encodeURIComponent(email)}`)
+  if (!res.ok) throw new Error(`GAS fetch failed: ${res.status}`)
+  const data = await res.json()
+  if (data.error) throw new Error(data.error)
+  return data as MyRegistration
+}

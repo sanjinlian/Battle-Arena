@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 
 interface NavigationProps {
   onLoginClick: () => void
+  onProfileClick: () => void
   user: { name: string; email: string } | null
   onLogout: () => void
 }
@@ -15,7 +16,7 @@ const NAV_LINKS = [
   { label: '公告', href: '#announcements' },
 ]
 
-export default function Navigation({ onLoginClick, user, onLogout }: NavigationProps) {
+export default function Navigation({ onLoginClick, onProfileClick, user, onLogout }: NavigationProps) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [userDropdown, setUserDropdown] = useState(false)
@@ -137,20 +138,21 @@ export default function Navigation({ onLoginClick, user, onLogout }: NavigationP
                       {user.email}
                     </div>
                     <button
+                      onClick={() => { onProfileClick(); setUserDropdown(false) }}
                       style={{
                         width: '100%',
                         padding: '10px 16px',
                         textAlign: 'left',
-                        fontFamily: "'Space Mono', monospace",
+                        fontFamily: "'Archivo Black', sans-serif",
                         fontSize: '0.7rem',
-                        color: 'rgba(242,237,224,0.5)',
+                        color: '#F2EDE0',
                         background: 'none',
                         border: 'none',
-                        cursor: 'default',
+                        cursor: 'pointer',
                         letterSpacing: '0.05em',
                       }}
                     >
-                      🚧 我的資訊（開發中）
+                      👤 我的資訊
                     </button>
                     <button
                       onClick={() => { onLogout(); setUserDropdown(false) }}
