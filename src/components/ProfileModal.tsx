@@ -167,7 +167,7 @@ export default function ProfileModal({ onClose, user, eventData }: ProfileModalP
                 { label: '姓名 / 暱稱', value: reg.name },
                 { label: 'Email', value: reg.email },
                 { label: '手機號碼', value: reg.phone },
-                { label: '報名狀態', value: reg.status === 'Pending' ? '✅ 確認中' : reg.status },
+                { label: '報名狀態', value: reg.status === 'Pending' ? '✅ 確認' : reg.status },
                 { label: '報名時間', value: formatDate(reg.registerDate || '') },
                 ...(reg.notes ? [{ label: '備注', value: reg.notes }] : []),
               ].map((f) => (
