@@ -33,7 +33,7 @@ async function gasPost<T>(action: string, payload: object): Promise<T> {
 // ── GET endpoints ─────────────────────────────────────────────
 
 export async function fetchAllCmsData(): Promise<Partial<CmsData>> {
-  const [configResult, hero, event, schedule, rules, faq, announcements, music, categories] =
+  const [configResult, hero, event, schedule, rules, faq, announcements, music] =
     await Promise.allSettled([
       gasGet<{ websiteConfig: CmsData['websiteConfig']; seasonConfig: CmsData['seasonConfig'] }>('config'),
       gasGet<CmsData['hero']>('hero'),
@@ -43,7 +43,6 @@ export async function fetchAllCmsData(): Promise<Partial<CmsData>> {
       gasGet<CmsData['faq']>('faq'),
       gasGet<CmsData['announcements']>('announcements'),
       gasGet<CmsData['music']>('music'),
-      gasGet<CmsData['categories']>('categories'),
     ])
 
   const partial: Partial<CmsData> = {}
@@ -59,7 +58,6 @@ export async function fetchAllCmsData(): Promise<Partial<CmsData>> {
   if (faq.status === 'fulfilled') partial.faq = faq.value
   if (announcements.status === 'fulfilled') partial.announcements = announcements.value
   if (music.status === 'fulfilled') partial.music = music.value
-  if (categories.status === 'fulfilled') partial.categories = categories.value
 
   return partial
 }

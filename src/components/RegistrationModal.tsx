@@ -8,8 +8,6 @@ interface RegistrationModalProps {
   onLoginRequired: () => void
   rulesData: Rule[]
   eventData: EventInfo
-  // categoriesData kept for prop compatibility but no longer used in modal
-  categoriesData?: unknown[]
 }
 
 type Step = 'rules' | 'form' | 'success'

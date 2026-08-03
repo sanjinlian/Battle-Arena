@@ -13,7 +13,6 @@ import type {
   Rule,
   FAQ,
   Announcement,
-  RegistrationCategory,
 } from '../types/cms'
 
 // Re-export types for backwards compatibility
@@ -25,7 +24,6 @@ export type {
   Rule,
   FAQ,
   Announcement,
-  RegistrationCategory,
 }
 
 /* ─── Fallback Website Config ─── */
@@ -45,6 +43,7 @@ export const heroPrizes: HeroPrize[] = [
   {
     enable: true,
     order: 1,
+    type: 'rank',
     heroName: 'Dragon Cup',
     beybladeImage: '',
     prizeImage: '',
@@ -57,6 +56,7 @@ export const heroPrizes: HeroPrize[] = [
   {
     enable: true,
     order: 2,
+    type: 'rank',
     heroName: 'Storm Kaiser',
     beybladeImage: '',
     prizeImage: '',
@@ -69,6 +69,7 @@ export const heroPrizes: HeroPrize[] = [
   {
     enable: true,
     order: 3,
+    type: 'rank',
     heroName: 'Shadow Cobra',
     beybladeImage: '',
     prizeImage: '',
@@ -132,11 +133,6 @@ export const announcements: Announcement[] = [
   { enable: true, date: '2026-07-15', title: '🎁 贊助商加碼獎品', content: 'CHAZZ × MAXBURST 聯名贊助，額外提供季軍限定周邊套組，感謝品牌支持！', type: 'event' },
 ]
 
-/* ─── Fallback Registration Categories ─── */
-export const categories: RegistrationCategory[] = [
-  { id: 'beginner', name: '初級組', description: '適合入門玩家，規則寬鬆，重視娛樂性', ageRange: '無限制', fee: 'NT$ 350', slots: 32, filled: 18 },
-  { id: 'advanced', name: '進階組', description: '適合有競技經驗的玩家，正式賽制，裁判錄影', ageRange: '無限制', fee: 'NT$ 350', slots: 32, filled: 24 },
-]
 
 /* ─── Complete fallback CmsData object ─── */
 export const fallbackData: CmsData = {
@@ -155,5 +151,4 @@ export const fallbackData: CmsData = {
   faq: faqs,
   announcements,
   music: [],
-  categories,
 }

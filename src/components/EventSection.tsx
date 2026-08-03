@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import type { EventInfo, RegistrationCategory } from '../types/cms'
+import type { EventInfo } from '../types/cms'
 import { fetchRegistrationStats, type RegistrationStats } from '../services/sheetApi'
 
 function formatDate(dateStr: string) {
@@ -18,11 +18,10 @@ function daysUntil(dateStr: string) {
 
 interface EventSectionProps {
   eventData: EventInfo
-  categoriesData: RegistrationCategory[]
   loading: boolean
 }
 
-export default function EventSection({ eventData, categoriesData, loading }: EventSectionProps) {
+export default function EventSection({ eventData, loading }: EventSectionProps) {
   const deadline = daysUntil(eventData.registerDeadline)
   const eventDays = daysUntil(eventData.date)
 
@@ -36,9 +35,9 @@ export default function EventSection({ eventData, categoriesData, loading }: Eve
       .catch(() => null)
   }, [])
 
-  // Prefer live stats from GAS; fallback to categoriesData when GAS not available
-  const totalSlots = stats?.maxSlots ?? (categoriesData.reduce((sum, c) => sum + c.slots, 0) || eventData.maxParticipants || 32)
-  const totalFilled = stats?.total ?? categoriesData.reduce((sum, c) => sum + c.filled, 0)
+  // Prefer live stats from GAS; fallback to eventData.maxParticipants when GAS not available
+  const totalSlots = stats?.maxSlots ?? eventData.maxParticipants ?? 32
+  const totalFilled = stats?.total ?? 0
   const filledPct = totalSlots > 0 ? Math.round((totalFilled / totalSlots) * 100) : 0
 
   return (

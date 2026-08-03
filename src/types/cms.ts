@@ -78,15 +78,6 @@ export interface MusicTrack {
   url: string
 }
 
-export interface RegistrationCategory {
-  id: string
-  name: string
-  description: string
-  ageRange: string
-  fee: string
-  slots: number
-  filled: number
-}
 
 export interface CmsData {
   websiteConfig: WebsiteConfig
@@ -98,7 +89,6 @@ export interface CmsData {
   faq: FAQ[]
   announcements: Announcement[]
   music: MusicTrack[]
-  categories: RegistrationCategory[]
 }
 
 export interface RegistrationPayload {

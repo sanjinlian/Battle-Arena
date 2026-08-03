@@ -127,12 +127,11 @@ export default function App() {
           heroData={data.hero}
           websiteConfig={data.websiteConfig}
         />
-        <EventSection eventData={data.event} categoriesData={data.categories} loading={cmsLoading} />
+        <EventSection eventData={data.event} loading={cmsLoading} />
         <ScheduleSection scheduleData={data.schedule} eventData={data.event} />
         <RegistrationSection
           onRegisterClick={handleRegisterClick}
           isLoggedIn={!!user}
-          categoriesData={data.categories}
           rulesData={data.rules}
           websiteConfig={data.websiteConfig}
           eventData={data.event}
@@ -154,7 +153,6 @@ export default function App() {
         <RegistrationModal
           onClose={() => setShowReg(false)}
           user={user}
-          categoriesData={data.categories}
           rulesData={data.rules}
           eventData={data.event}
           onLoginRequired={() => { setShowReg(false); setShowAuth(true) }}

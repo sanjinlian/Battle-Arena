@@ -8,8 +8,6 @@ interface RegistrationSectionProps {
   rulesData: Rule[]
   websiteConfig: WebsiteConfig
   eventData: EventInfo
-  // kept for prop compatibility
-  categoriesData?: unknown[]
 }
 
 const BRACKET = [
