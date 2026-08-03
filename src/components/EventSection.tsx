@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react'
 import type { EventInfo, RegistrationCategory } from '../types/cms'
+import { fetchRegistrationStats, type RegistrationStats } from '../services/sheetApi'
 
 function formatDate(dateStr: string) {
   if (!dateStr) return '—'
@@ -24,8 +26,19 @@ export default function EventSection({ eventData, categoriesData, loading }: Eve
   const deadline = daysUntil(eventData.registerDeadline)
   const eventDays = daysUntil(eventData.date)
 
-  const totalSlots = categoriesData.reduce((sum, c) => sum + c.slots, 0)
-  const totalFilled = categoriesData.reduce((sum, c) => sum + c.filled, 0)
+  const [stats, setStats] = useState<RegistrationStats | null>(null)
+
+  useEffect(() => {
+    const gasUrl = import.meta.env.VITE_GAS_URL
+    if (!gasUrl) return
+    fetchRegistrationStats()
+      .then(setStats)
+      .catch(() => null)
+  }, [])
+
+  // Prefer live stats from GAS; fallback to categoriesData when GAS not available
+  const totalSlots = stats?.maxSlots ?? (categoriesData.reduce((sum, c) => sum + c.slots, 0) || eventData.maxParticipants || 32)
+  const totalFilled = stats?.total ?? categoriesData.reduce((sum, c) => sum + c.filled, 0)
   const filledPct = totalSlots > 0 ? Math.round((totalFilled / totalSlots) * 100) : 0
 
   return (
@@ -268,7 +281,7 @@ export default function EventSection({ eventData, categoriesData, loading }: Eve
                   marginBottom: 8,
                 }}
               >
-                {eventData.maxParticipants} 人
+                {totalSlots} 人
               </div>
               {/* Progress bar — driven by real category data */}
               <div style={{ height: 6, background: 'rgba(255,255,255,0.1)', borderRadius: 3 }}>
