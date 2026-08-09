@@ -5,9 +5,10 @@ interface ProfileModalProps {
   onClose: () => void
   user: { name: string; email: string }
   eventData: { title: string; date: string; location: string }
+  onContinuePayment?: (pending: { registrationId: string; group: string; groupLabel: string }) => void
 }
 
-export default function ProfileModal({ onClose, user, eventData }: ProfileModalProps) {
+export default function ProfileModal({ onClose, user, eventData, onContinuePayment }: ProfileModalProps) {
   const [reg, setReg] = useState<MyRegistration | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -36,6 +37,18 @@ export default function ProfileModal({ onClose, user, eventData }: ProfileModalP
   }
 
   const groupColor = reg?.group === 'A' ? '#E63946' : '#1B2A6B'
+  const isPaid = reg?.paymentStatus === 'paid'
+  const isUnpaid = reg?.found && reg?.paymentStatus === 'unpaid'
+
+  const handleContinuePayment = () => {
+    if (!reg?.registrationId || !reg?.group || !reg?.groupLabel) return
+    onContinuePayment?.({
+      registrationId: reg.registrationId,
+      group: reg.group,
+      groupLabel: reg.groupLabel,
+    })
+    onClose()
+  }
 
   return (
     <div
@@ -111,6 +124,72 @@ export default function ProfileModal({ onClose, user, eventData }: ProfileModalP
         {/* Registration found */}
         {!loading && !error && reg?.found && (
           <>
+            {/* ── 待繳費警示 ── */}
+            {isUnpaid && (
+              <div
+                style={{
+                  background: 'rgba(230,57,70,0.12)',
+                  border: '2px solid #E63946',
+                  padding: '16px 18px',
+                  marginBottom: 20,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 10,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: '1.2rem' }}>⚠️</span>
+                  <div>
+                    <div style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '0.9rem', color: '#E63946' }}>
+                      尚未完成繳費
+                    </div>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'rgba(242,237,224,0.55)', lineHeight: 1.5 }}>
+                      付款完成後才算正式報名成功
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={handleContinuePayment}
+                  className="btn-sticker"
+                  style={{
+                    padding: '10px 16px',
+                    background: '#E63946',
+                    color: '#F2EDE0',
+                    border: '2px solid rgba(242,237,224,0.3)',
+                    boxShadow: '3px 3px 0 rgba(242,237,224,0.15)',
+                    cursor: 'pointer',
+                    fontFamily: "'Archivo Black', sans-serif",
+                    fontSize: '0.82rem',
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    textAlign: 'center',
+                  }}
+                >
+                  繼續繳費 →
+                </button>
+              </div>
+            )}
+
+            {/* ── 已繳費完成 ── */}
+            {isPaid && (
+              <div
+                style={{
+                  background: 'rgba(0,196,79,0.08)',
+                  border: '1px solid rgba(0,196,79,0.3)',
+                  padding: '12px 16px',
+                  marginBottom: 20,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                }}
+              >
+                <span style={{ fontSize: '1.1rem' }}>✅</span>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.78rem', color: 'rgba(0,196,79,0.9)' }}>
+                  付款已確認，報名完成！
+                </div>
+              </div>
+            )}
+
             {/* Event info */}
             <div style={{ marginBottom: 20 }}>
               <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', letterSpacing: '0.2em', color: 'rgba(242,237,224,0.35)', textTransform: 'uppercase', marginBottom: 10 }}>
@@ -167,7 +246,18 @@ export default function ProfileModal({ onClose, user, eventData }: ProfileModalP
                 { label: '姓名 / 暱稱', value: reg.name },
                 { label: 'Email', value: reg.email },
                 { label: '手機號碼', value: reg.phone },
-                { label: '報名狀態', value: reg.status === 'Pending' ? '✅ 確認' : reg.status },
+                {
+                  label: '報名狀態',
+                  value: reg.status === 'Pending' ? '✅ 確認' : reg.status,
+                },
+                {
+                  label: '繳費狀態',
+                  value: reg.paymentStatus === 'paid'
+                    ? '✅ 已繳費'
+                    : reg.paymentStatus === 'unpaid'
+                    ? '🟡 待繳費'
+                    : '—',
+                },
                 { label: '報名時間', value: formatDate(reg.registerDate || '') },
                 ...(reg.notes ? [{ label: '備注', value: reg.notes }] : []),
               ].map((f) => (
@@ -192,9 +282,15 @@ export default function ProfileModal({ onClose, user, eventData }: ProfileModalP
               ))}
             </div>
 
-            <div className="stamp inline-block" style={{ color: '#00C44F', borderColor: '#00C44F', fontSize: '0.7rem' }}>
-              REGISTERED
-            </div>
+            {isPaid ? (
+              <div className="stamp inline-block" style={{ color: '#00C44F', borderColor: '#00C44F', fontSize: '0.7rem' }}>
+                REGISTERED
+              </div>
+            ) : (
+              <div className="stamp inline-block" style={{ color: '#FFD600', borderColor: '#FFD600', fontSize: '0.7rem' }}>
+                PENDING PAYMENT
+              </div>
+            )}
           </>
         )}
       </div>

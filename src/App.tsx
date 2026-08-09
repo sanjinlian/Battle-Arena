@@ -19,6 +19,12 @@ interface User {
   email: string
 }
 
+interface PendingPayment {
+  registrationId: string
+  group: string
+  groupLabel: string
+}
+
 export default function App() {
   const { data, loading: cmsLoading } = useCmsData()
 
@@ -34,6 +40,8 @@ export default function App() {
   const [showAuth, setShowAuth] = useState(false)
   const [showReg, setShowReg] = useState(false)
   const [showProfile, setShowProfile] = useState(false)
+  // 從「我的資訊」繼續繳費時傳入的報名資料
+  const [pendingPayment, setPendingPayment] = useState<PendingPayment | undefined>(undefined)
 
   useEffect(() => {
     if (!showLoading) {
@@ -45,13 +53,13 @@ export default function App() {
     if (mainVisible) {
       const bgm = new Audio(`${import.meta.env.BASE_URL}background_music.wav`)
       bgm.loop = true
-      bgm.volume = 0.4 // Slightly lower for background
-      
+      bgm.volume = 0.4
+
       const tryPlay = () => {
         bgm.play().catch(e => {
           console.warn('BGM Autoplay blocked, waiting for interaction:', e)
           const playOnInteract = () => {
-            bgm.play().catch(() => {}) // Ignore if still fails
+            bgm.play().catch(() => {})
             document.removeEventListener('click', playOnInteract)
             document.removeEventListener('keydown', playOnInteract)
           }
@@ -59,9 +67,9 @@ export default function App() {
           document.addEventListener('keydown', playOnInteract)
         })
       }
-      
+
       tryPlay()
-      
+
       return () => {
         bgm.pause()
         bgm.currentTime = 0
@@ -88,8 +96,16 @@ export default function App() {
     if (!user) {
       setShowAuth(true)
     } else {
+      setPendingPayment(undefined) // 正常報名，不帶 pending
       setShowReg(true)
     }
+  }
+
+  // 從 ProfileModal 繼續繳費
+  const handleContinuePayment = (pending: PendingPayment) => {
+    setPendingPayment(pending)
+    setShowProfile(false)
+    setShowReg(true)
   }
 
   // Show maintenance page if configured
@@ -154,10 +170,12 @@ export default function App() {
       )}
       {showReg && (
         <RegistrationModal
-          onClose={() => setShowReg(false)}
+          onClose={() => { setShowReg(false); setPendingPayment(undefined) }}
           user={user}
           rulesData={data.rules}
           eventData={data.event}
+          paymentData={data.payment}
+          pendingPayment={pendingPayment}
           onLoginRequired={() => { setShowReg(false); setShowAuth(true) }}
         />
       )}
@@ -166,6 +184,7 @@ export default function App() {
           onClose={() => setShowProfile(false)}
           user={user}
           eventData={data.event}
+          onContinuePayment={handleContinuePayment}
         />
       )}
     </>

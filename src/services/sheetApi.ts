@@ -7,6 +7,8 @@ import type {
   CmsData,
   RegistrationPayload,
   LoginPayload,
+  PaymentConfig,
+  PaymentStatus,
 } from '../types/cms'
 
 const GAS_URL = import.meta.env.VITE_GAS_URL as string
@@ -33,7 +35,7 @@ async function gasPost<T>(action: string, payload: object): Promise<T> {
 // ── GET endpoints ─────────────────────────────────────────────
 
 export async function fetchAllCmsData(): Promise<Partial<CmsData>> {
-  const [configResult, hero, event, schedule, rules, faq, announcements, music] =
+  const [configResult, hero, event, schedule, rules, faq, announcements, music, payment] =
     await Promise.allSettled([
       gasGet<{ websiteConfig: CmsData['websiteConfig']; seasonConfig: CmsData['seasonConfig'] }>('config'),
       gasGet<CmsData['hero']>('hero'),
@@ -43,6 +45,7 @@ export async function fetchAllCmsData(): Promise<Partial<CmsData>> {
       gasGet<CmsData['faq']>('faq'),
       gasGet<CmsData['announcements']>('announcements'),
       gasGet<CmsData['music']>('music'),
+      gasGet<PaymentConfig>('payment'),
     ])
 
   const partial: Partial<CmsData> = {}
@@ -58,6 +61,7 @@ export async function fetchAllCmsData(): Promise<Partial<CmsData>> {
   if (faq.status === 'fulfilled') partial.faq = faq.value
   if (announcements.status === 'fulfilled') partial.announcements = announcements.value
   if (music.status === 'fulfilled') partial.music = music.value
+  if (payment.status === 'fulfilled') partial.payment = payment.value
 
   return partial
 }
@@ -96,6 +100,7 @@ export interface MyRegistration {
   group?: string
   groupLabel?: string
   status?: string
+  paymentStatus?: PaymentStatus
   registerDate?: string
   notes?: string
 }

@@ -78,6 +78,16 @@ export interface MusicTrack {
   url: string
 }
 
+export interface PaymentConfig {
+  bankName: string
+  bankCode: string
+  accountNumber: string
+  bankNote: string
+  creditCardEnable: boolean
+  creditCardUrl: string
+  creditCardLabel: string
+}
+
 
 export interface CmsData {
   websiteConfig: WebsiteConfig
@@ -89,6 +99,7 @@ export interface CmsData {
   faq: FAQ[]
   announcements: Announcement[]
   music: MusicTrack[]
+  payment: PaymentConfig
 }
 
 export interface RegistrationPayload {
@@ -98,6 +109,8 @@ export interface RegistrationPayload {
   category: string
   notes?: string
 }
+
+export type PaymentStatus = 'unpaid' | 'paid'
 
 export interface LoginPayload {
   email: string

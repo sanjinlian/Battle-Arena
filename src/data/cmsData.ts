@@ -13,6 +13,7 @@ import type {
   Rule,
   FAQ,
   Announcement,
+  PaymentConfig,
 } from '../types/cms'
 
 // Re-export types for backwards compatibility
@@ -24,6 +25,7 @@ export type {
   Rule,
   FAQ,
   Announcement,
+  PaymentConfig,
 }
 
 /* ─── Fallback Website Config ─── */
@@ -133,6 +135,17 @@ export const announcements: Announcement[] = [
   { enable: true, date: '2026-07-15', title: '🎁 贊助商加碼獎品', content: 'CHAZZ × MAXBURST 聯名贊助，額外提供季軍限定周邊套組，感謝品牌支持！', type: 'event' },
 ]
 
+/* ─── Fallback Payment Config ─── */
+export const paymentConfig: PaymentConfig = {
+  bankName: '台新銀行（812）',
+  bankCode: '812',
+  accountNumber: '000-000-000000',
+  bankNote: '請於備注欄填寫「姓名 + 報名編號」，轉帳後請截圖保留。',
+  creditCardEnable: true,
+  creditCardUrl: 'https://payment.ecpay.com.tw/',
+  creditCardLabel: '前往綠界刷卡（信用卡）',
+}
+
 
 /* ─── Complete fallback CmsData object ─── */
 export const fallbackData: CmsData = {
@@ -151,4 +164,5 @@ export const fallbackData: CmsData = {
   faq: faqs,
   announcements,
   music: [],
+  payment: paymentConfig,
 }
