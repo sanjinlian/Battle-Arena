@@ -14,6 +14,7 @@ import type {
   FAQ,
   Announcement,
   PaymentConfig,
+  BracketItem,
 } from '../types/cms'
 
 // Re-export types for backwards compatibility
@@ -26,6 +27,7 @@ export type {
   FAQ,
   Announcement,
   PaymentConfig,
+  BracketItem,
 }
 
 /* ─── Fallback Website Config ─── */
@@ -146,6 +148,14 @@ export const paymentConfig: PaymentConfig = {
   creditCardLabel: '前往綠界刷卡（信用卡）',
 }
 
+/* ─── Fallback Bracket Data ─── */
+export const bracketData: BracketItem[] = [
+  { order: 1, stage: '32強', matches: '16 場', desc: 'A盤 & B盤 同時進行', detail: '選手平均分配，快速消化前期賽程', color: '#E63946', active: true },
+  { order: 2, stage: '8強', matches: '4 場', desc: 'A盤 & B盤 同時進行', detail: '各盤前4強晋級，兲8人進入半決賽', color: '#E63946', active: true },
+  { order: 3, stage: '4強 ／ 季軍賽', matches: '3 場', desc: '全部改在 A盤（一般盤）', detail: '確保所有選手在決賽前A盤適應手感', color: '#FFD600', active: false },
+  { order: 4, stage: '決賽', matches: '1 場', desc: 'A盤（一般盤）', detail: '雙方立足點完全平等', color: '#00C44F', active: false },
+]
+
 
 /* ─── Complete fallback CmsData object ─── */
 export const fallbackData: CmsData = {
@@ -165,4 +175,5 @@ export const fallbackData: CmsData = {
   announcements,
   music: [],
   payment: paymentConfig,
+  bracket: bracketData,
 }

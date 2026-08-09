@@ -9,6 +9,7 @@ import type {
   LoginPayload,
   PaymentConfig,
   PaymentStatus,
+  BracketItem,
 } from '../types/cms'
 
 const GAS_URL = import.meta.env.VITE_GAS_URL as string
@@ -35,7 +36,7 @@ async function gasPost<T>(action: string, payload: object): Promise<T> {
 // ── GET endpoints ─────────────────────────────────────────────
 
 export async function fetchAllCmsData(): Promise<Partial<CmsData>> {
-  const [configResult, hero, event, schedule, rules, faq, announcements, music, payment] =
+  const [configResult, hero, event, schedule, rules, faq, announcements, music, payment, bracket] =
     await Promise.allSettled([
       gasGet<{ websiteConfig: CmsData['websiteConfig']; seasonConfig: CmsData['seasonConfig'] }>('config'),
       gasGet<CmsData['hero']>('hero'),
@@ -46,6 +47,7 @@ export async function fetchAllCmsData(): Promise<Partial<CmsData>> {
       gasGet<CmsData['announcements']>('announcements'),
       gasGet<CmsData['music']>('music'),
       gasGet<PaymentConfig>('payment'),
+      gasGet<BracketItem[]>('bracket'),
     ])
 
   const partial: Partial<CmsData> = {}
@@ -62,6 +64,7 @@ export async function fetchAllCmsData(): Promise<Partial<CmsData>> {
   if (announcements.status === 'fulfilled') partial.announcements = announcements.value
   if (music.status === 'fulfilled') partial.music = music.value
   if (payment.status === 'fulfilled') partial.payment = payment.value
+  if (bracket.status === 'fulfilled') partial.bracket = bracket.value
 
   return partial
 }

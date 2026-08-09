@@ -88,6 +88,16 @@ export interface PaymentConfig {
   creditCardLabel: string
 }
 
+export interface BracketItem {
+  order: number
+  stage: string
+  matches: string
+  desc: string
+  detail: string
+  color: string
+  active: boolean
+}
+
 
 export interface CmsData {
   websiteConfig: WebsiteConfig
@@ -100,6 +110,7 @@ export interface CmsData {
   announcements: Announcement[]
   music: MusicTrack[]
   payment: PaymentConfig
+  bracket: BracketItem[]
 }
 
 export interface RegistrationPayload {

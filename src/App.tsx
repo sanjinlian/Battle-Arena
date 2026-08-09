@@ -154,6 +154,7 @@ export default function App() {
           rulesData={data.rules}
           websiteConfig={data.websiteConfig}
           eventData={data.event}
+          bracketData={data.bracket}
         />
         <FAQSection faqData={data.faq} />
         <AnnouncementsSection announcementsData={data.announcements} />

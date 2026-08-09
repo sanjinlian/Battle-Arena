@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import type { Rule, WebsiteConfig, EventInfo } from '../types/cms'
+import type { Rule, WebsiteConfig, EventInfo, BracketItem } from '../types/cms'
 import { fetchRegistrationStats, type RegistrationStats } from '../services/sheetApi'
 
 interface RegistrationSectionProps {
@@ -8,44 +8,10 @@ interface RegistrationSectionProps {
   rulesData: Rule[]
   websiteConfig: WebsiteConfig
   eventData: EventInfo
+  bracketData: BracketItem[]
 }
 
-const BRACKET = [
-  {
-    stage: '32強',
-    matches: '16 場',
-    desc: 'A盤 & B盤 同時進行',
-    detail: '選手平均分配，快速消化前期賽程',
-    color: '#E63946',
-    active: true,
-  },
-  {
-    stage: '8強',
-    matches: '4 場',
-    desc: 'A盤 & B盤 同時進行',
-    detail: '各盤前4強晉級，共8人進入半決賽',
-    color: '#E63946',
-    active: true,
-  },
-  {
-    stage: '4強 ／ 季軍賽',
-    matches: '3 場',
-    desc: '全部改在 A盤（一般盤）',
-    detail: '確保所有選手在決賽前於A盤適應手感',
-    color: '#FFD600',
-    active: false,
-  },
-  {
-    stage: '決賽',
-    matches: '1 場',
-    desc: 'A盤（一般盤）',
-    detail: '雙方立足點完全平等',
-    color: '#00C44F',
-    active: false,
-  },
-]
-
-export default function RegistrationSection({ onRegisterClick, isLoggedIn, rulesData, websiteConfig, eventData }: RegistrationSectionProps) {
+export default function RegistrationSection({ onRegisterClick, isLoggedIn, rulesData, websiteConfig, eventData, bracketData }: RegistrationSectionProps) {
   const [rulesOpen, setRulesOpen] = useState<number | null>(null)
   const [stats, setStats] = useState<RegistrationStats | null>(null)
 
@@ -99,7 +65,7 @@ export default function RegistrationSection({ onRegisterClick, isLoggedIn, rules
             </div>
 
             <div className="space-y-3 mb-8">
-              {BRACKET.map((row, i) => (
+              {bracketData.map((row, i) => (
                 <div
                   key={row.stage}
                   style={{
@@ -107,9 +73,9 @@ export default function RegistrationSection({ onRegisterClick, isLoggedIn, rules
                     alignItems: 'stretch',
                     gap: 0,
                     border: '2px solid #0D0D0D',
-                    background: i === 3 ? '#0D0D0D' : 'white',
-                    boxShadow: i === 3 ? '5px 5px 0 #E63946' : '3px 3px 0 rgba(13,13,13,0.15)',
-                    transform: `rotate(${['-0.5deg', '0.4deg', '-0.3deg', '0.2deg'][i]})`,
+                    background: i === bracketData.length - 1 ? '#0D0D0D' : 'white',
+                    boxShadow: i === bracketData.length - 1 ? '5px 5px 0 #E63946' : '3px 3px 0 rgba(13,13,13,0.15)',
+                    transform: `rotate(${['-0.5deg', '0.4deg', '-0.3deg', '0.2deg'][i % 4]})`,
                   }}
                 >
                   {/* Stage color bar */}
@@ -118,7 +84,7 @@ export default function RegistrationSection({ onRegisterClick, isLoggedIn, rules
                   {/* Content */}
                   <div style={{ flex: 1, padding: '14px 16px' }}>
                     <div className="flex items-center justify-between flex-wrap gap-2" style={{ marginBottom: 4 }}>
-                      <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '1rem', color: i === 3 ? '#F2EDE0' : '#0D0D0D' }}>
+                      <span style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '1rem', color: i === bracketData.length - 1 ? '#F2EDE0' : '#0D0D0D' }}>
                         {row.stage}
                       </span>
                       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -137,10 +103,10 @@ export default function RegistrationSection({ onRegisterClick, isLoggedIn, rules
                         )}
                       </div>
                     </div>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.8rem', color: i === 3 ? '#FFD600' : '#0D0D0D', marginBottom: 2 }}>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.8rem', color: i === bracketData.length - 1 ? '#FFD600' : '#0D0D0D', marginBottom: 2 }}>
                       {row.desc}
                     </div>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', color: i === 3 ? 'rgba(242,237,224,0.5)' : 'rgba(13,13,13,0.45)', lineHeight: 1.4 }}>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', color: i === bracketData.length - 1 ? 'rgba(242,237,224,0.5)' : 'rgba(13,13,13,0.45)', lineHeight: 1.4 }}>
                       {row.detail}
                     </div>
                   </div>
