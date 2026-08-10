@@ -35,7 +35,6 @@ jobs:
         env:
           VITE_GAS_URL: ${{ secrets.VITE_GAS_URL }}
           VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
-          FIGMA_PUBLIC_URL: /Battle-Arena
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
