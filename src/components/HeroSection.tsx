@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import SpinningTop from './SpinningTop'
 import type { HeroPrize, WebsiteConfig } from '../types/cms'
 
@@ -8,6 +9,8 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ onRegisterClick, heroData, websiteConfig }: HeroSectionProps) {
+  const [selectedPrizeImage, setSelectedPrizeImage] = useState<string | null>(null)
+
   const tops = heroData.filter((h) => h.enable).sort((a, b) => a.order - b.order)
   const medalPrizes = tops.filter(h => h.type === 'rank')
   const participationPrizes = tops.filter(h => h.type === 'participation')
@@ -162,6 +165,7 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
             return (
               <div
                 key={hero.heroName}
+                onClick={() => hero.prizeImage && setSelectedPrizeImage(hero.prizeImage)}
                 className={`relative ${rotations[i]} ${yOffsets[i]} transition-transform duration-300 hover:scale-105 hover:rotate-0 cursor-pointer`}
                 style={{
                   background: m.bg,
@@ -322,6 +326,8 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
               {participationPrizes.map((prize, idx) => (
                 <div
                   key={prize.heroName + idx}
+                  onClick={() => prize.prizeImage && setSelectedPrizeImage(prize.prizeImage)}
+                  className={prize.prizeImage ? 'cursor-pointer transition-transform hover:scale-[1.02]' : ''}
                   style={{
                     background: 'linear-gradient(145deg, #081a0e 0%, #0f1f12 70%)',
                     border: '2px solid #00C44F',
@@ -459,6 +465,8 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
               {bonusPrizes.map((prize, idx) => (
                 <div
                   key={prize.heroName + idx}
+                  onClick={() => prize.prizeImage && setSelectedPrizeImage(prize.prizeImage)}
+                  className={prize.prizeImage ? 'cursor-pointer transition-transform hover:scale-[1.02]' : ''}
                   style={{
                     background: 'linear-gradient(145deg, #1a1500 0%, #141414 70%)',
                     border: '2px solid #FFD600',
@@ -617,6 +625,31 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
           )`,
         }}
       />
+
+      {/* Prize Image Modal */}
+      {selectedPrizeImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80"
+          onClick={() => setSelectedPrizeImage(null)}
+          style={{ backdropFilter: 'blur(4px)' }}
+        >
+          <div className="relative max-w-3xl max-h-[90vh] overflow-hidden rounded-lg border-2 border-[#FFD600] shadow-[0_0_20px_rgba(255,214,0,0.3)]">
+            <button
+              onClick={() => setSelectedPrizeImage(null)}
+              className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-black/50 hover:bg-black/80 text-white rounded-full transition-colors z-10"
+              style={{ fontFamily: "'Space Mono', monospace" }}
+            >
+              ✕
+            </button>
+            <img
+              src={selectedPrizeImage}
+              alt="Prize"
+              className="w-full h-full object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
     </section>
   )
 }
