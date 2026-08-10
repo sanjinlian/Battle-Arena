@@ -633,19 +633,24 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
           onClick={() => setSelectedPrizeImage(null)}
           style={{ backdropFilter: 'blur(4px)' }}
         >
-          <div className="relative max-w-3xl max-h-[90vh] overflow-hidden rounded-lg border-2 border-[#FFD600] shadow-[0_0_20px_rgba(255,214,0,0.3)]">
-            <button
-              onClick={() => setSelectedPrizeImage(null)}
-              className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-black/50 hover:bg-black/80 text-white rounded-full transition-colors z-10"
-              style={{ fontFamily: "'Space Mono', monospace" }}
-            >
-              ✕
-            </button>
+          {/* Close Button */}
+          <button
+            onClick={() => setSelectedPrizeImage(null)}
+            className="absolute top-4 right-4 md:top-8 md:right-8 w-10 h-10 flex items-center justify-center bg-black/50 hover:bg-black/80 text-[#F2EDE0] border border-[#FFD600] rounded-full transition-colors z-10"
+            style={{ fontFamily: "'Space Mono', monospace" }}
+          >
+            ✕
+          </button>
+
+          {/* Scrollable Image Container */}
+          <div 
+            className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-lg border-2 border-[#FFD600] shadow-[0_0_20px_rgba(255,214,0,0.3)] bg-[#0D0D0D]"
+            onClick={(e) => e.stopPropagation()}
+          >
             <img
               src={selectedPrizeImage}
               alt="Prize"
-              className="w-full h-full object-contain"
-              onClick={(e) => e.stopPropagation()}
+              className="w-full h-auto block"
             />
           </div>
         </div>
