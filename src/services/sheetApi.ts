@@ -36,6 +36,12 @@ async function gasPost<T>(action: string, payload: object): Promise<T> {
 // ── GET endpoints ─────────────────────────────────────────────
 
 export async function fetchAllCmsData(): Promise<Partial<CmsData>> {
+  console.log('[CMS] GAS_URL:', GAS_URL || 'NOT SET ⚠️')
+  if (!GAS_URL) {
+    console.warn('[CMS] VITE_GAS_URL not set — using fallback data')
+    return {}
+  }
+
   const [configResult, hero, event, schedule, rules, faq, announcements, music, payment, bracket] =
     await Promise.allSettled([
       gasGet<{ websiteConfig: CmsData['websiteConfig']; seasonConfig: CmsData['seasonConfig'] }>('config'),
@@ -49,6 +55,14 @@ export async function fetchAllCmsData(): Promise<Partial<CmsData>> {
       gasGet<PaymentConfig>('payment'),
       gasGet<BracketItem[]>('bracket'),
     ])
+
+  const results = { configResult, hero, event, schedule, rules, faq, announcements, music, payment, bracket }
+  const failed = Object.entries(results).filter(([, v]) => v.status === 'rejected')
+  if (failed.length > 0) {
+    console.warn('[CMS] Some fetches failed:', failed.map(([k, v]) => `${k}: ${(v as PromiseRejectedResult).reason}`))
+  } else {
+    console.log('[CMS] All fetches succeeded ✅')
+  }
 
   const partial: Partial<CmsData> = {}
 
