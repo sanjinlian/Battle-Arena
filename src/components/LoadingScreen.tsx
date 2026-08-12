@@ -3,9 +3,10 @@ import SpinningTop from './SpinningTop'
 
 interface LoadingScreenProps {
   onComplete: () => void
+  isDataLoading: boolean
 }
 
-type Phase = 'black' | 'fly-in' | 'spin' | 'collide' | 'explode' | 'logo' | 'button'
+type Phase = 'black' | 'fly-in' | 'spin' | 'collide' | 'explode' | 'logo' | 'button' | 'waiting'
 
 const SPARKS = Array.from({ length: 20 }, (_, i) => ({
   angle: (i / 20) * 360,
@@ -15,9 +16,10 @@ const SPARKS = Array.from({ length: 20 }, (_, i) => ({
   duration: 0.4 + Math.random() * 0.4,
 }))
 
-export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
+export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScreenProps) {
   const [phase, setPhase] = useState<Phase>('black')
   const [exploding, setExploding] = useState(false)
+  const [animationReady, setAnimationReady] = useState(false)
 
   useEffect(() => {
     const audio = new Audio(`${import.meta.env.BASE_URL}loading_music.mp3`)
@@ -31,7 +33,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       setTimeout(() => setPhase('collide'), 3600),
       setTimeout(() => { setPhase('explode'); setExploding(true) }, 4200),
       setTimeout(() => setPhase('logo'), 4900),
-      setTimeout(() => setPhase('button'), 6200),
+      setTimeout(() => setAnimationReady(true), 6200),
     ]
     return () => {
       timers.forEach(clearTimeout)
@@ -39,6 +41,16 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       audio.currentTime = 0
     }
   }, [])
+
+  useEffect(() => {
+    if (animationReady) {
+      if (!isDataLoading) {
+        setPhase('button')
+      } else {
+        setPhase('waiting')
+      }
+    }
+  }, [animationReady, isDataLoading])
 
   const flyInStyle = (phase === 'fly-in' || phase === 'spin' || phase === 'collide' || phase === 'explode' || phase === 'logo' || phase === 'button')
 
@@ -228,6 +240,21 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
             margin: '0 auto 2rem',
           }}
         />
+
+        {/* Syncing Data Indicator */}
+        {phase === 'waiting' && (
+          <div
+            className="animate-pulse"
+            style={{
+              color: '#FFD600',
+              fontFamily: "'Space Mono', monospace",
+              fontSize: '0.9rem',
+              letterSpacing: '0.2em',
+            }}
+          >
+            SYNCING DATA...
+          </div>
+        )}
 
         {/* Enter button */}
         <button

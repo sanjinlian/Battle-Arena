@@ -28,14 +28,8 @@ interface PendingPayment {
 export default function App() {
   const { data, loading: cmsLoading } = useCmsData()
 
-  const [showLoading, setShowLoading] = useState(() => {
-    try {
-      return !localStorage.getItem('chazz_arena_loaded')
-    } catch {
-      return true
-    }
-  })
-  const [mainVisible, setMainVisible] = useState(!showLoading)
+  const [showLoading, setShowLoading] = useState(true)
+  const [mainVisible, setMainVisible] = useState(false)
   const [user, setUser] = useState<User | null>(null)
   const [showAuth, setShowAuth] = useState(false)
   const [showReg, setShowReg] = useState(false)
@@ -78,11 +72,6 @@ export default function App() {
   }, [mainVisible])
 
   const handleLoadingComplete = () => {
-    try {
-      localStorage.setItem('chazz_arena_loaded', '1')
-    } catch {
-      // ignore
-    }
     setMainVisible(true)
     setTimeout(() => setShowLoading(false), 800)
   }
@@ -124,7 +113,7 @@ export default function App() {
   return (
     <>
       {/* Loading screen */}
-      {showLoading && <LoadingScreen onComplete={handleLoadingComplete} />}
+      {showLoading && <LoadingScreen onComplete={handleLoadingComplete} isDataLoading={cmsLoading} />}
 
       {/* Main site */}
       <div

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import SpinningTop from './SpinningTop'
 import type { HeroPrize, WebsiteConfig } from '../types/cms'
 
@@ -10,6 +10,17 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onRegisterClick, heroData, websiteConfig }: HeroSectionProps) {
   const [selectedPrizeImage, setSelectedPrizeImage] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (selectedPrizeImage) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [selectedPrizeImage])
 
   const tops = heroData.filter((h) => h.enable).sort((a, b) => a.order - b.order)
   const medalPrizes = tops.filter(h => h.type === 'rank')
@@ -629,29 +640,30 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
       {/* Prize Image Modal */}
       {selectedPrizeImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80"
+          className="fixed inset-0 z-[100] bg-black/80 overflow-y-auto"
           onClick={() => setSelectedPrizeImage(null)}
           style={{ backdropFilter: 'blur(4px)' }}
         >
-          {/* Close Button */}
+          {/* Close Button fixed to viewport */}
           <button
             onClick={() => setSelectedPrizeImage(null)}
-            className="absolute top-4 right-4 md:top-8 md:right-8 w-10 h-10 flex items-center justify-center bg-black/50 hover:bg-black/80 text-[#F2EDE0] border border-[#FFD600] rounded-full transition-colors z-10"
+            className="fixed top-4 right-4 md:top-8 md:right-8 w-10 h-10 flex items-center justify-center bg-black/50 hover:bg-black/80 text-[#F2EDE0] border border-[#FFD600] rounded-full transition-colors z-[110]"
             style={{ fontFamily: "'Space Mono', monospace" }}
           >
             ✕
           </button>
 
-          {/* Scrollable Image Container */}
-          <div 
-            className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-lg border-2 border-[#FFD600] shadow-[0_0_20px_rgba(255,214,0,0.3)] bg-[#0D0D0D]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img
-              src={selectedPrizeImage}
-              alt="Prize"
-              className="w-full h-auto block"
-            />
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div 
+              className="relative w-full max-w-3xl rounded-lg border-2 border-[#FFD600] shadow-[0_0_20px_rgba(255,214,0,0.3)] bg-[#0D0D0D] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={selectedPrizeImage}
+                alt="Prize"
+                className="w-full h-auto block"
+              />
+            </div>
           </div>
         </div>
       )}
