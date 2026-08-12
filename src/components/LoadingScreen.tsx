@@ -20,6 +20,7 @@ export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScre
   const [phase, setPhase] = useState<Phase>('black')
   const [exploding, setExploding] = useState(false)
   const [animationReady, setAnimationReady] = useState(false)
+  const [progress, setProgress] = useState(0)
 
   useEffect(() => {
     const timers = [
@@ -38,12 +39,38 @@ export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScre
   useEffect(() => {
     if (animationReady) {
       if (!isDataLoading) {
-        setPhase('button')
+        setProgress(100)
+        setTimeout(() => setPhase('button'), 300)
       } else {
         setPhase('waiting')
       }
     }
   }, [animationReady, isDataLoading])
+
+  // 當 waiting 結束（資料抓到了）
+  useEffect(() => {
+    if (animationReady && !isDataLoading && phase === 'waiting') {
+      setProgress(100)
+      setTimeout(() => setPhase('button'), 300)
+    }
+  }, [isDataLoading, animationReady, phase])
+
+  // 進度條動畫
+  useEffect(() => {
+    // 0 → 85% 在 6200ms 內（配合動畫）
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (phase === 'button') return 100
+        // 在 waiting 階段緩慢爬行到 95
+        const target = animationReady ? 95 : 85
+        if (prev >= target) return prev
+        // 越接近目標越慢（緩動效果）
+        const step = Math.max(0.3, (target - prev) * 0.04)
+        return Math.min(target, prev + step)
+      })
+    }, 80)
+    return () => clearInterval(interval)
+  }, [animationReady, phase])
 
   const flyInStyle = (phase === 'fly-in' || phase === 'spin' || phase === 'collide' || phase === 'explode' || phase === 'logo' || phase === 'waiting' || phase === 'button')
 
@@ -271,18 +298,50 @@ export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScre
         Coffee × Culture × Combat
       </div>
 
-      {/* Bottom loading text */}
-      {phase === 'waiting' && (
+      {/* Progress bar */}
+      {phase !== 'black' && (
         <div
-          className="absolute bottom-3 left-0 right-0 text-center animate-pulse"
-          style={{
-            fontFamily: "'Space Mono', monospace",
-            fontSize: '0.65rem',
-            color: 'rgba(255, 214, 0, 0.8)',
-            letterSpacing: '0.2em',
-          }}
+          className="absolute bottom-0 left-0 right-0"
+          style={{ padding: '0 0 1.5rem' }}
         >
-          loading...
+          {/* Percentage text */}
+          <div
+            style={{
+              textAlign: 'center',
+              fontFamily: "'Space Mono', monospace",
+              fontSize: '0.65rem',
+              color: 'rgba(255, 214, 0, 0.9)',
+              letterSpacing: '0.2em',
+              marginBottom: '0.5rem',
+            }}
+          >
+            {Math.floor(progress)}%
+          </div>
+          {/* Bar track */}
+          <div
+            style={{
+              margin: '0 auto',
+              width: '60%',
+              height: 2,
+              background: 'rgba(255,255,255,0.08)',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Bar fill */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                height: '100%',
+                width: `${progress}%`,
+                background: progress === 100 ? '#E63946' : '#FFD600',
+                transition: 'width 0.08s linear, background 0.3s ease',
+                boxShadow: progress === 100 ? '0 0 8px #E63946' : '0 0 6px #FFD600',
+              }}
+            />
+          </div>
         </div>
       )}
     </div>
