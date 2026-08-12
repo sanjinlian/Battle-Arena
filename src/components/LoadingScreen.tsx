@@ -39,33 +39,43 @@ export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScre
   useEffect(() => {
     if (animationReady) {
       if (!isDataLoading) {
-        setProgress(100)
-        setTimeout(() => setPhase('button'), 300)
+        // 資料已就緒：一格一格跳到 100%
+        stepToComplete()
       } else {
         setPhase('waiting')
       }
     }
   }, [animationReady, isDataLoading])
 
-  // 當 waiting 結束（資料抓到了）
+  // 如果 waiting 期間資料就緒：開始跳到 100%
   useEffect(() => {
     if (animationReady && !isDataLoading && phase === 'waiting') {
-      setProgress(100)
-      setTimeout(() => setPhase('button'), 300)
+      stepToComplete()
     }
   }, [isDataLoading, animationReady, phase])
 
-  // 進度條動畫
-  useEffect(() => {
-    // 0 → 85% 在 6200ms 內（配合動畫）
+  // 從目前進度一格一格跳到 100，完成後顯示按鈕
+  function stepToComplete() {
     const interval = setInterval(() => {
       setProgress(prev => {
-        if (phase === 'button') return 100
-        // 在 waiting 階段緩慢爬行到 95
-        const target = animationReady ? 95 : 85
+        if (prev >= 100) {
+          clearInterval(interval)
+          setTimeout(() => setPhase('button'), 300)
+          return 100
+        }
+        return prev + 1
+      })
+    }, 25)
+  }
+
+  // 進度條緩動：動畫期間 0→50%，waiting 期間繼續爬行到 95%
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (phase === 'button') return prev
+        const target = animationReady ? 95 : 50
         if (prev >= target) return prev
-        // 越接近目標越慢（緩動效果）
-        const step = Math.max(0.3, (target - prev) * 0.04)
+        const step = Math.max(0.2, (target - prev) * 0.03)
         return Math.min(target, prev + step)
       })
     }, 80)
@@ -284,10 +294,11 @@ export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScre
         </button>
       </div>
 
-      {/* Bottom tagline */}
+      {/* Bottom tagline — 移高一點，避免與進度條重疊 */}
       <div
-        className="absolute bottom-8 left-0 right-0 text-center transition-opacity duration-700"
+        className="absolute left-0 right-0 text-center transition-opacity duration-700"
         style={{
+          bottom: '4.5rem',
           fontFamily: "'Special Elite', cursive",
           fontSize: '0.85rem',
           color: 'rgba(242,237,224,0.35)',
