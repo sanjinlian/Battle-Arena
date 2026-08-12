@@ -22,11 +22,6 @@ export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScre
   const [animationReady, setAnimationReady] = useState(false)
 
   useEffect(() => {
-    const audio = new Audio(`${import.meta.env.BASE_URL}loading_music.mp3`)
-    audio.loop = true
-    audio.volume = 0.5 // Default reasonable volume
-    audio.play().catch(e => console.warn('Autoplay blocked:', e))
-
     const timers = [
       setTimeout(() => setPhase('fly-in'), 400),
       setTimeout(() => setPhase('spin'), 1800),
@@ -37,8 +32,6 @@ export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScre
     ]
     return () => {
       timers.forEach(clearTimeout)
-      audio.pause()
-      audio.currentTime = 0
     }
   }, [])
 
