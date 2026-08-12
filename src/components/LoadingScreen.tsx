@@ -52,7 +52,7 @@ export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScre
     }
   }, [animationReady, isDataLoading])
 
-  const flyInStyle = (phase === 'fly-in' || phase === 'spin' || phase === 'collide' || phase === 'explode' || phase === 'logo' || phase === 'button')
+  const flyInStyle = (phase === 'fly-in' || phase === 'spin' || phase === 'collide' || phase === 'explode' || phase === 'logo' || phase === 'waiting' || phase === 'button')
 
   return (
     <div
@@ -67,7 +67,7 @@ export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScre
         className="absolute inset-0 transition-opacity duration-700"
         style={{
           background: 'radial-gradient(ellipse at center, rgba(230,57,70,0.15) 0%, transparent 70%)',
-          opacity: phase === 'explode' || phase === 'logo' || phase === 'button' ? 1 : 0,
+          opacity: phase === 'explode' || phase === 'logo' || phase === 'waiting' || phase === 'button' ? 1 : 0,
         }}
       />
 
@@ -80,7 +80,7 @@ export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScre
           transform: 'translate(-50%, -50%)',
           width: 340,
           height: 200,
-          opacity: phase === 'logo' || phase === 'button' ? 0 : 1,
+          opacity: phase === 'logo' || phase === 'waiting' || phase === 'button' ? 0 : 1,
           transition: 'opacity 0.5s ease',
         }}
       >
@@ -183,8 +183,8 @@ export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScre
       <div
         className="absolute text-center"
         style={{
-          opacity: phase === 'logo' || phase === 'button' ? 1 : 0,
-          animation: phase === 'logo' || phase === 'button' ? 'logo-reveal 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards' : 'none',
+          opacity: phase === 'logo' || phase === 'waiting' || phase === 'button' ? 1 : 0,
+          animation: phase === 'logo' || phase === 'waiting' || phase === 'button' ? 'logo-reveal 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards' : 'none',
         }}
       >
         {/* Season stamp */}
@@ -241,21 +241,6 @@ export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScre
           }}
         />
 
-        {/* Syncing Data Indicator */}
-        {phase === 'waiting' && (
-          <div
-            className="animate-pulse"
-            style={{
-              color: '#FFD600',
-              fontFamily: "'Space Mono', monospace",
-              fontSize: '0.9rem',
-              letterSpacing: '0.2em',
-            }}
-          >
-            SYNCING DATA...
-          </div>
-        )}
-
         {/* Enter button */}
         <button
           onClick={onComplete}
@@ -287,11 +272,26 @@ export default function LoadingScreen({ onComplete, isDataLoading }: LoadingScre
           fontSize: '0.85rem',
           color: 'rgba(242,237,224,0.35)',
           letterSpacing: '0.1em',
-          opacity: phase === 'logo' || phase === 'button' ? 1 : 0,
+          opacity: phase === 'logo' || phase === 'waiting' || phase === 'button' ? 1 : 0,
         }}
       >
         Coffee × Culture × Combat
       </div>
+
+      {/* Bottom loading text */}
+      {phase === 'waiting' && (
+        <div
+          className="absolute bottom-3 left-0 right-0 text-center animate-pulse"
+          style={{
+            fontFamily: "'Space Mono', monospace",
+            fontSize: '0.65rem',
+            color: 'rgba(255, 214, 0, 0.8)',
+            letterSpacing: '0.2em',
+          }}
+        >
+          loading...
+        </div>
+      )}
     </div>
   )
 }
