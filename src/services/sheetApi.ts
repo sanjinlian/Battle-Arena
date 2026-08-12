@@ -36,37 +36,14 @@ async function gasPost<T>(action: string, payload: object): Promise<T> {
 // ── GET endpoints ─────────────────────────────────────────────
 
 export async function fetchAllCmsData(): Promise<Partial<CmsData>> {
-  const [configResult, hero, event, schedule, rules, faq, announcements, music, payment, bracket] =
-    await Promise.allSettled([
-      gasGet<{ websiteConfig: CmsData['websiteConfig']; seasonConfig: CmsData['seasonConfig'] }>('config'),
-      gasGet<CmsData['hero']>('hero'),
-      gasGet<CmsData['event']>('event'),
-      gasGet<CmsData['schedule']>('schedule'),
-      gasGet<CmsData['rules']>('rules'),
-      gasGet<CmsData['faq']>('faq'),
-      gasGet<CmsData['announcements']>('announcements'),
-      gasGet<CmsData['music']>('music'),
-      gasGet<PaymentConfig>('payment'),
-      gasGet<BracketItem[]>('bracket'),
-    ])
-
-  const partial: Partial<CmsData> = {}
-
-  if (configResult.status === 'fulfilled') {
-    partial.websiteConfig = configResult.value.websiteConfig
-    partial.seasonConfig = configResult.value.seasonConfig
+  // 透過單一請求 'getAllData' 取回所有 CMS 資料，大幅降低連線延遲
+  try {
+    const allData = await gasGet<Partial<CmsData>>('getAllData')
+    return allData
+  } catch (err) {
+    console.error('Failed to fetch all data via getAllData, falling back to empty object:', err)
+    return {}
   }
-  if (hero.status === 'fulfilled') partial.hero = hero.value
-  if (event.status === 'fulfilled') partial.event = event.value
-  if (schedule.status === 'fulfilled') partial.schedule = schedule.value
-  if (rules.status === 'fulfilled') partial.rules = rules.value
-  if (faq.status === 'fulfilled') partial.faq = faq.value
-  if (announcements.status === 'fulfilled') partial.announcements = announcements.value
-  if (music.status === 'fulfilled') partial.music = music.value
-  if (payment.status === 'fulfilled') partial.payment = payment.value
-  if (bracket.status === 'fulfilled') partial.bracket = bracket.value
-
-  return partial
 }
 
 // ── POST endpoints ────────────────────────────────────────────
