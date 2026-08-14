@@ -5,6 +5,8 @@ interface NavigationProps {
   onProfileClick: () => void
   user: { name: string; email: string } | null
   onLogout: () => void
+  onBracketClick: () => void
+  currentPage: string
 }
 
 const NAV_LINKS = [
@@ -16,7 +18,7 @@ const NAV_LINKS = [
   { label: '公告', href: '#announcements' },
 ]
 
-export default function Navigation({ onLoginClick, onProfileClick, user, onLogout }: NavigationProps) {
+export default function Navigation({ onLoginClick, onProfileClick, user, onLogout, onBracketClick, currentPage }: NavigationProps) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [userDropdown, setUserDropdown] = useState(false)
@@ -64,17 +66,37 @@ export default function Navigation({ onLoginClick, onProfileClick, user, onLogou
                   fontFamily: "'Space Mono', monospace",
                   fontSize: '0.7rem',
                   letterSpacing: '0.15em',
-                  color: 'rgba(242,237,224,0.7)',
+                  color: currentPage === 'bracket' ? 'rgba(242,237,224,0.5)' : 'rgba(242,237,224,0.7)',
                   textDecoration: 'none',
                   textTransform: 'uppercase',
                   transition: 'color 0.2s ease',
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = '#FFD600')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(242,237,224,0.7)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = currentPage === 'bracket' ? 'rgba(242,237,224,0.5)' : 'rgba(242,237,224,0.7)')}
               >
                 {link.label}
               </a>
             ))}
+            {/* Bracket page link */}
+            <button
+              onClick={onBracketClick}
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: '0.7rem',
+                letterSpacing: '0.15em',
+                color: currentPage === 'bracket' ? '#FFD600' : 'rgba(242,237,224,0.7)',
+                textTransform: 'uppercase',
+                background: currentPage === 'bracket' ? 'rgba(255,214,0,0.1)' : 'none',
+                border: currentPage === 'bracket' ? '1px solid rgba(255,214,0,0.3)' : 'none',
+                padding: currentPage === 'bracket' ? '4px 10px' : '0',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#FFD600')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = currentPage === 'bracket' ? '#FFD600' : 'rgba(242,237,224,0.7)')}
+            >
+              對戰表
+            </button>
           </div>
 
           {/* Right: login / user */}
@@ -245,6 +267,21 @@ export default function Navigation({ onLoginClick, onProfileClick, user, onLogou
                 {link.label}
               </a>
             ))}
+            <button
+              onClick={() => { onBracketClick(); setMenuOpen(false) }}
+              style={{
+                display: 'block', width: '100%', textAlign: 'left',
+                padding: '10px 16px',
+                fontFamily: "'Space Mono', monospace",
+                fontSize: '0.8rem', letterSpacing: '0.15em',
+                color: currentPage === 'bracket' ? '#FFD600' : 'rgba(242,237,224,0.8)',
+                background: 'none', border: 'none', cursor: 'pointer',
+                textTransform: 'uppercase',
+                borderBottom: '1px solid rgba(255,255,255,0.05)',
+              }}
+            >
+              對戰表 ⚔
+            </button>
           </div>
         )}
       </div>

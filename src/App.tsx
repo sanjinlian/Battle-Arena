@@ -12,6 +12,7 @@ import AuthModal from './components/AuthModal'
 import RegistrationModal from './components/RegistrationModal'
 import ProfileModal from './components/ProfileModal'
 import Footer from './components/Footer'
+import BracketPage from './pages/BracketPage'
 import { useCmsData } from './hooks/useCmsData'
 
 interface User {
@@ -30,6 +31,7 @@ export default function App() {
 
   const [showLoading, setShowLoading] = useState(true)
   const [mainVisible, setMainVisible] = useState(false)
+  const [currentPage, setCurrentPage] = useState<'home' | 'bracket'>('home')
   const [user, setUser] = useState<User | null>(null)
   const [showAuth, setShowAuth] = useState(false)
   const [showReg, setShowReg] = useState(false)
@@ -128,27 +130,37 @@ export default function App() {
           onProfileClick={() => setShowProfile(true)}
           user={user}
           onLogout={() => setUser(null)}
+          onBracketClick={() => { setCurrentPage('bracket'); window.scrollTo(0, 0) }}
+          currentPage={currentPage}
         />
 
-        <HeroSection
-          onRegisterClick={handleRegisterClick}
-          heroData={data.hero}
-          websiteConfig={data.websiteConfig}
-        />
-        <EventSection eventData={data.event} loading={cmsLoading} />
-        <ScheduleSection scheduleData={data.schedule} eventData={data.event} />
-        <RegistrationSection
-          onRegisterClick={handleRegisterClick}
-          isLoggedIn={!!user}
-          rulesData={data.rules}
-          websiteConfig={data.websiteConfig}
-          eventData={data.event}
-          bracketData={data.bracket}
-        />
-        <FAQSection faqData={data.faq} />
-        <AnnouncementsSection announcementsData={data.announcements} />
-        <ComingSoonSection />
-        <Footer />
+        {/* Bracket subpage — only mounts when user navigates there (lazy load) */}
+        {currentPage === 'bracket' && (
+          <BracketPage onBackHome={() => { setCurrentPage('home'); window.scrollTo(0, 0) }} />
+        )}
+
+        {/* Home sections — hidden (not unmounted) to preserve BGM & scroll position */}
+        <div style={{ display: currentPage === 'bracket' ? 'none' : 'block' }}>
+          <HeroSection
+            onRegisterClick={handleRegisterClick}
+            heroData={data.hero}
+            websiteConfig={data.websiteConfig}
+          />
+          <EventSection eventData={data.event} loading={cmsLoading} />
+          <ScheduleSection scheduleData={data.schedule} eventData={data.event} />
+          <RegistrationSection
+            onRegisterClick={handleRegisterClick}
+            isLoggedIn={!!user}
+            rulesData={data.rules}
+            websiteConfig={data.websiteConfig}
+            eventData={data.event}
+            bracketData={data.bracket}
+          />
+          <FAQSection faqData={data.faq} />
+          <AnnouncementsSection announcementsData={data.announcements} />
+          <ComingSoonSection />
+          <Footer />
+        </div>
       </div>
 
       {/* Modals */}
