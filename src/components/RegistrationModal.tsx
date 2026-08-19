@@ -400,10 +400,43 @@ export default function RegistrationModal({
             <h3 style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '1.5rem', color: '#0D0D0D', marginBottom: 6 }}>
               報名完成！
             </h3>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.82rem', color: 'rgba(13,13,13,0.6)', marginBottom: 16, lineHeight: 1.7 }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.82rem', color: 'rgba(13,13,13,0.6)', marginBottom: 14, lineHeight: 1.7 }}>
               主辦方將核對付款後正式確認報名<br />
               確認後會以 Email 通知你
             </p>
+
+            {/* 官方 LINE 連結 */}
+            <div style={{ marginBottom: 16 }}>
+              <a
+                href="https://lin.ee/nqHtOZv"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-sticker"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  background: '#06C755',
+                  color: '#FFFFFF',
+                  border: '2px solid #0D0D0D',
+                  padding: '10px 16px',
+                  boxShadow: '3px 3px 0 #0D0D0D',
+                  textDecoration: 'none',
+                  fontSize: '0.82rem',
+                  fontFamily: "'Inter', sans-serif",
+                  fontWeight: 700,
+                  letterSpacing: '0.02em',
+                  lineHeight: 1.4,
+                  maxWidth: '100%',
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
+                  <path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.12 1.87 5.86 4.69 7.37-.14.73-.5 2.65-.57 3.06-.09.52.19.51.4.38.16-.1 2.22-1.51 3.12-2.12.76.11 1.55.16 2.36.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2zm-4.3 11.25H6.22c-.28 0-.5-.22-.5-.5V8.25c0-.28.22-.5.5-.5s.5.22.5.5V12.75h.98c.28 0 .5.22.5.5s-.22.5-.5.5zm2.08 0c-.28 0-.5-.22-.5-.5V8.25c0-.28.22-.5.5-.5s.5.22.5.5v4.5c0 .28-.22.5-.5.5zm4.84 0h-1.02c-.28 0-.5-.22-.5-.5V8.25c0-.28.22-.5.5-.5h1.02c.28 0 .5.22.5.5s-.22.5-.5.5h-.52v1.25h.52c.28 0 .5.22.5.5s-.22.5-.5.5h-.52V12.25h.52c.28 0 .5.22.5.5s-.22.5-.5.5zm-2.02 0c-.13 0-.26-.05-.35-.15l-1.63-2.16v1.81c0 .28-.22.5-.5.5s-.5-.22-.5-.5V8.25c0-.21.13-.4.32-.47.19-.07.41-.02.53.12l1.63 2.16V8.25c0-.28.22-.5.5-.5s.5.22.5.5v4.5c0 .28-.22.5-.5.5z" />
+                </svg>
+                <span>加入官方 LINE｜開通賽事通知 / 最新賽程資訊</span>
+              </a>
+            </div>
 
             <div
               style={{
