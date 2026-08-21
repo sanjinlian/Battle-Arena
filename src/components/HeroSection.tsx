@@ -298,7 +298,7 @@ export default function HeroSection({ onRegisterClick, heroData, websiteConfig }
 
         {/* ── Participation prizes section ── */}
         {participationPrizes.length > 0 && (
-          <div style={{ marginBottom: 48 }}>
+          <div id="prizes" style={{ marginBottom: 48 }}>
             <div className="flex items-center gap-4 mb-8">
               <div style={{ flex: 1, height: 1, background: 'rgba(242,237,224,0.1)' }} />
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
