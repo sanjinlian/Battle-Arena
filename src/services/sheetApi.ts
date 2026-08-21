@@ -129,3 +129,9 @@ export async function fetchMyRegistration(email: string): Promise<MyRegistration
   if (data.error) throw new Error(data.error)
   return data as MyRegistration
 }
+
+export async function postConfirmPayment(
+  payload: { registrationId: string; note: string }
+): Promise<{ success: boolean; message?: string }> {
+  return gasPost('confirmPayment', payload)
+}
