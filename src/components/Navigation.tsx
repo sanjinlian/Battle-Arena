@@ -7,6 +7,7 @@ interface NavigationProps {
   onLogout: () => void
   onBracketClick: () => void
   currentPage: string
+  onNavLinkClick: (href: string) => void
 }
 
 const NAV_LINKS = [
@@ -18,7 +19,7 @@ const NAV_LINKS = [
   { label: '公告', href: '#announcements' },
 ]
 
-export default function Navigation({ onLoginClick, onProfileClick, user, onLogout, onBracketClick, currentPage }: NavigationProps) {
+export default function Navigation({ onLoginClick, onProfileClick, user, onLogout, onBracketClick, currentPage, onNavLinkClick }: NavigationProps) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [userDropdown, setUserDropdown] = useState(false)
@@ -62,6 +63,12 @@ export default function Navigation({ onLoginClick, onProfileClick, user, onLogou
               <a
                 key={link.href}
                 href={link.href}
+                onClick={(e) => {
+                  if (currentPage === 'bracket') {
+                    e.preventDefault()
+                    onNavLinkClick(link.href)
+                  }
+                }}
                 style={{
                   fontFamily: "'Space Mono', monospace",
                   fontSize: '0.7rem',
@@ -251,7 +258,13 @@ export default function Navigation({ onLoginClick, onProfileClick, user, onLogou
               <a
                 key={link.href}
                 href={link.href}
-                onClick={() => setMenuOpen(false)}
+                onClick={(e) => {
+                  setMenuOpen(false)
+                  if (currentPage === 'bracket') {
+                    e.preventDefault()
+                    onNavLinkClick(link.href)
+                  }
+                }}
                 style={{
                   display: 'block',
                   padding: '10px 16px',
