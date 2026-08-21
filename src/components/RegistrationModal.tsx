@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Rule, EventInfo, PaymentConfig } from '../types/cms'
-import { postRegistration } from '../services/sheetApi'
+import { postRegistration, postConfirmPayment } from '../services/sheetApi'
 
 interface RegistrationModalProps {
   onClose: () => void
@@ -27,7 +27,7 @@ export default function RegistrationModal({
 }: RegistrationModalProps) {
   const [step, setStep] = useState<Step>(pendingPayment ? 'payment' : 'rules')
   const [rulesAccepted, setRulesAccepted] = useState(false)
-  const [form, setForm] = useState({ name: user?.name ?? '', email: user?.email ?? '', phone: '', notes: '' })
+  const [form, setForm] = useState({ name: user?.name ?? '', email: user?.email ?? '', phone: '' })
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [result, setResult] = useState<{ registrationId: string; group: string; groupLabel: string } | null>(
@@ -35,6 +35,9 @@ export default function RegistrationModal({
   )
   const [paymentTab, setPaymentTab] = useState<PaymentTab>('bank')
   const [paymentConfirmed, setPaymentConfirmed] = useState(false)
+  const [note, setNote] = useState('')
+  const [confirming, setConfirming] = useState(false)
+  const [confirmError, setConfirmError] = useState('')
 
   if (!user) {
     return (
@@ -72,7 +75,7 @@ export default function RegistrationModal({
         name: form.name,
         phone: form.phone,
         category: '',
-        notes: form.notes,
+        notes: '',
       })
       if (res.success) {
         setResult({
@@ -88,6 +91,24 @@ export default function RegistrationModal({
       setSubmitError('網路錯誤，請稍後再試')
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  const handleConfirmPayment = async () => {
+    if (!result) return
+    setConfirming(true)
+    setConfirmError('')
+    try {
+      const res = await postConfirmPayment({ registrationId: result.registrationId, note })
+      if (res.success) {
+        setStep('done')
+      } else {
+        setConfirmError(res.message || '送出失敗，請再試一次')
+      }
+    } catch {
+      setConfirmError('網路錯誤，請稍後再試')
+    } finally {
+      setConfirming(false)
     }
   }
 
@@ -194,7 +215,6 @@ export default function RegistrationModal({
                 { label: '姓名 / 暱稱', key: 'name', type: 'text', placeholder: 'Dragon Fighter' },
                 { label: 'Email', key: 'email', type: 'email', placeholder: 'you@example.com' },
                 { label: '手機號碼', key: 'phone', type: 'tel', placeholder: '0912-345-678' },
-                { label: '備注（選填）', key: 'notes', type: 'text', placeholder: '特殊需求或備注' },
               ].map((field) => (
                 <div key={field.key} style={{ marginBottom: 14 }}>
                   <label style={{ display: 'block', fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', letterSpacing: '0.15em', color: 'rgba(13,13,13,0.55)', textTransform: 'uppercase', marginBottom: 5 }}>{field.label}</label>
@@ -349,6 +369,22 @@ export default function RegistrationModal({
               </div>
             )}
 
+            {/* 轉帳末五碼 / 備注 */}
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ display: 'block', fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', letterSpacing: '0.15em', color: 'rgba(13,13,13,0.55)', textTransform: 'uppercase', marginBottom: 5 }}>
+                轉帳末五碼 / 備注（選填）
+              </label>
+              <input
+                type="text"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder="例如：12345"
+                style={{ width: '100%', padding: '10px 12px', background: 'white', border: '2px solid rgba(13,13,13,0.2)', fontFamily: "'Inter', sans-serif", fontSize: '0.88rem', color: '#0D0D0D', outline: 'none', boxSizing: 'border-box' }}
+                onFocus={(e) => (e.target.style.borderColor = '#E63946')}
+                onBlur={(e) => (e.target.style.borderColor = 'rgba(13,13,13,0.2)')}
+              />
+            </div>
+
             {/* 確認已付款 */}
             <div style={{ marginBottom: 12 }}>
               <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer' }}>
@@ -364,9 +400,13 @@ export default function RegistrationModal({
               </label>
             </div>
 
+            {confirmError && (
+              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.7rem', color: '#E63946', marginBottom: 8 }}>✕ {confirmError}</div>
+            )}
+
             <button
-              disabled={!paymentConfirmed}
-              onClick={() => setStep('done')}
+              disabled={!paymentConfirmed || confirming}
+              onClick={handleConfirmPayment}
               className="btn-sticker w-full"
               style={{
                 display: 'block',
@@ -382,9 +422,10 @@ export default function RegistrationModal({
                 textTransform: 'uppercase',
                 boxShadow: paymentConfirmed ? '4px 4px 0 #0D0D0D' : 'none',
                 transition: 'all 0.2s ease',
+                opacity: confirming ? 0.7 : 1,
               }}
             >
-              我已付款，完成報名
+              {confirming ? '送出中...' : '我已付款，完成報名'}
             </button>
 
             <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: 'rgba(13,13,13,0.4)', marginTop: 8, textAlign: 'center', lineHeight: 1.5 }}>
