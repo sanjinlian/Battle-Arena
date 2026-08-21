@@ -132,6 +132,12 @@ export default function App() {
           onLogout={() => setUser(null)}
           onBracketClick={() => { setCurrentPage('bracket'); window.scrollTo(0, 0) }}
           currentPage={currentPage}
+          onNavLinkClick={(href) => {
+            setCurrentPage('home')
+            setTimeout(() => {
+              document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+            }, 50)
+          }}
         />
 
         {/* Bracket subpage — only mounts when user navigates there (lazy load) */}
